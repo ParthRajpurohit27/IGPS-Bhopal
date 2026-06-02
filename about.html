@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | Indira Gandhi Public School - Prempura, Bhopal</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: '#4F46E5', secondary: '#F59E0B' },
+                    borderRadius: { 'button': '8px' }
+                }
+            }
+        }
+    </script>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <link rel="stylesheet" href="igps.css">
+    <link rel="stylesheet" href="about.css">
+</head>
+<body class="bg-gray-50">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full bg-white shadow-sm z-50">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="IGPS.html">
+                <img src="https://i.postimg.cc/fWxPrJMh/single-without-bg.png" alt="IGPS Logo" class="h-12 md:h-14">
+            </a>
+            <nav class="hidden md:flex items-center space-x-6">
+                <a href="IGPS.html#home" class="text-gray-700 hover:text-primary transition-colors">Home</a>
+                <a href="about.html" class="text-primary font-semibold transition-colors">About</a>
+                <a href="IGPS.html#academics" class="text-gray-700 hover:text-primary transition-colors">Academics</a>
+                <a href="IGPS.html#admissions" class="text-gray-700 hover:text-primary transition-colors">Admissions</a>
+                <a href="IGPS.html#contact" class="text-gray-700 hover:text-primary transition-colors">Contact</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <a href="IGPS.html#admissions"
+                    class="hidden md:block bg-primary text-white px-4 py-2 !rounded-button hover:bg-primary/90 transition-colors cursor-pointer">Apply Now</a>
+                <button id="menuBtn"
+                    class="md:hidden w-10 h-10 flex items-center justify-center text-gray-700 cursor-pointer">
+                    <i class="ri-menu-line ri-lg"></i>
+                </button>
+            </div>
+        </div>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden bg-white shadow-lg absolute top-full left-0 w-full py-4 px-4 md:hidden">
+            <div class="flex flex-col space-y-4">
+                <a href="IGPS.html#home" class="text-gray-700 hover:text-primary transition-colors py-2 border-b border-gray-100">Home</a>
+                <a href="about.html" class="text-primary font-semibold transition-colors py-2 border-b border-gray-100">About</a>
+                <a href="IGPS.html#academics" class="text-gray-700 hover:text-primary transition-colors py-2 border-b border-gray-100">Academics</a>
+                <a href="IGPS.html#admissions" class="text-gray-700 hover:text-primary transition-colors py-2 border-b border-gray-100">Admissions</a>
+                <a href="IGPS.html#gallery" class="text-gray-700 hover:text-primary transition-colors py-2 border-b border-gray-100">Gallery</a>
+                <a href="IGPS.html#contact" class="text-gray-700 hover:text-primary transition-colors py-2">Contact</a>
+                <a href="IGPS.html#admissions" class="bg-primary text-white px-4 py-2 !rounded-button text-center hover:bg-primary/90 transition-colors cursor-pointer">Apply Now</a>
+            </div>
+        </div>
+    </header>
+    <main class="pt-16">
+        <!-- Hero Section -->
+        <section class="about-hero-bg relative py-20 flex items-center justify-center">
+            <div class="absolute inset-0 bg-primary/70"></div>
+            <div class="relative z-10 text-center text-white px-4">
+                <h1 class="text-4xl md:text-5xl font-bold mb-4 font-['Pacifico']">About Our School</h1>
+                <p class="text-lg md:text-xl max-w-2xl mx-auto">Indira Gandhi Public School, Prempura, Bhopal – nurturing young minds since 1993 with a vision for holistic education and excellence.</p>
+            </div>
+        </section>
+        <!-- About Content -->
+        <section class="py-16 px-4 bg-white">
+            <div class="container mx-auto">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 mb-8 md:mb-0 reveal">
+                        <img src="https://i.postimg.cc/J0gW30LY/national.jpg" alt="About Our School" class="rounded-lg shadow-lg w-full h-[320px] object-cover">
+                    </div>
+                    <div class="md:w-1/2 md:pl-12 reveal" style="transition-delay: 0.2s">
+                        <h2 class="text-2xl md:text-3xl font-bold mb-4 text-primary">Our Story</h2>
+                        <p class="mb-4 text-gray-700">Indira Gandhi Public School was established in 1993 by Mr. Avdhesh Rajpurohit with a vision to provide quality education to children in Prempura, Bhopal. Our school is affiliated with the MP Board and offers classes from Nursery to 8th Grade.</p>
+                        <p class="mb-4 text-gray-700">We focus on creating a balanced learning environment that nurtures academic excellence, physical development, and moral values. Our mission is to empower every student to become responsible citizens and lifelong learners.</p>
+                        <ul class="list-disc pl-6 text-gray-700 mb-4">
+                            <li>Modern classrooms with digital learning resources</li>
+                            <li>Experienced and caring faculty</li>
+                            <li>Safe and secure campus</li>
+                            <li>Focus on extracurricular and co-curricular activities</li>
+                        </ul>
+                        <a href="IGPS.html#contact" class="inline-block bg-primary text-white px-6 py-3 !rounded-button hover:bg-primary/90 transition-colors cursor-pointer mt-2">Contact Us</a>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Vision, Mission, Values -->
+        <section class="py-12 px-4 bg-gray-50">
+            <div class="container mx-auto">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 text-center">
+                    <div class="bg-white p-8 rounded-lg shadow-md reveal">
+                        <i class="ri-eye-line ri-2x text-primary mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2 text-gray-800">Our Vision</h3>
+                        <p class="text-gray-600">To be a leading institution that inspires and empowers students to achieve their highest potential and contribute positively to society.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-md reveal" style="transition-delay:0.1s">
+                        <i class="ri-flag-line ri-2x text-secondary mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2 text-gray-800">Our Mission</h3>
+                        <p class="text-gray-600">To provide a nurturing environment that fosters academic excellence, creativity, and character development through innovative teaching and learning.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-md reveal" style="transition-delay:0.2s">
+                        <i class="ri-heart-2-line ri-2x text-pink-500 mb-4"></i>
+                        <h3 class="text-xl font-bold mb-2 text-gray-800">Our Values</h3>
+                        <p class="text-gray-600">Integrity, Respect, Responsibility, Compassion, and a passion for lifelong learning.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Key Highlights / Stats -->
+        <section class="py-12 px-4 bg-white">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-10 reveal">School at a Glance</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="bg-primary/10 p-6 rounded-lg shadow-md text-center reveal">
+                        <div class="w-16 h-16 flex items-center justify-center mx-auto bg-white rounded-full mb-4">
+                            <i class="ri-user-line ri-xl text-primary"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-primary counter" data-target="150">0</h3>
+                        <p class="text-gray-700">Students</p>
+                    </div>
+                    <div class="bg-secondary/10 p-6 rounded-lg shadow-md text-center reveal" style="transition-delay:0.1s">
+                        <div class="w-16 h-16 flex items-center justify-center mx-auto bg-white rounded-full mb-4">
+                            <i class="ri-user-star-line ri-xl text-secondary"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-secondary counter" data-target="10">0</h3>
+                        <p class="text-gray-700">Teachers</p>
+                    </div>
+                    <div class="bg-green-100 p-6 rounded-lg shadow-md text-center reveal" style="transition-delay:0.2s">
+                        <div class="w-16 h-16 flex items-center justify-center mx-auto bg-white rounded-full mb-4">
+                            <i class="ri-award-line ri-xl text-green-600"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-green-600 counter" data-target="32">0</h3>
+                        <p class="text-gray-700">Years of Excellence</p>
+                    </div>
+                    <div class="bg-purple-100 p-6 rounded-lg shadow-md text-center reveal" style="transition-delay:0.3s">
+                        <div class="w-16 h-16 flex items-center justify-center mx-auto bg-white rounded-full mb-4">
+                            <i class="ri-building-4-line ri-xl text-purple-600"></i>
+                        </div>
+                        <h3 class="text-2xl font-bold text-purple-600 counter" data-target="20">0</h3>
+                        <p class="text-gray-700">Classrooms</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Gallery -->
+        <section class="py-12 bg-gray-50">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-8 reveal">Campus Life</h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="rounded-lg overflow-hidden shadow-lg reveal">
+                        <img src="https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=600&q=80" alt="Classroom" class="w-full h-56 object-cover">
+                    </div>
+                    <div class="rounded-lg overflow-hidden shadow-lg reveal" style="transition-delay:0.1s">
+                        <img src="https://images.unsplash.com/photo-1464983953574-0892a716854b?auto=format&fit=crop&w=600&q=80" alt="Science Lab" class="w-full h-56 object-cover">
+                    </div>
+                    <div class="rounded-lg overflow-hidden shadow-lg reveal" style="transition-delay:0.2s">
+                        <img src="https://images.unsplash.com/photo-1513258496099-48168024aec0?auto=format&fit=crop&w=600&q=80" alt="Library" class="w-full h-56 object-cover">
+                    </div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-6">
+                    <div class="rounded-lg overflow-hidden shadow-lg reveal">
+                        <img src="https://images.unsplash.com/photo-1510414696678-2415ad8474aa?auto=format&fit=crop&w=600&q=80" alt="Computer Lab" class="w-full h-56 object-cover">
+                    </div>
+                    <div class="rounded-lg overflow-hidden shadow-lg reveal" style="transition-delay:0.1s">
+                        <img src="https://images.unsplash.com/photo-1519125323398-675f0ddb6308?auto=format&fit=crop&w=600&q=80" alt="School Event" class="w-full h-56 object-cover">
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- More Details -->
+        <section class="py-12 px-4 bg-white">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-10 reveal">More About IGPS</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                    <div class="bg-gray-50 p-8 rounded-lg shadow-md reveal">
+                        <h3 class="text-xl font-semibold mb-4 text-primary">Facilities</h3>
+                        <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                            <li>Spacious, well-ventilated classrooms</li>
+                            <li>Science and computer labs</li>
+                            <li>Library with a wide range of books</li>
+                            <li>Playground and sports facilities</li>
+                            <li>Safe drinking water and clean sanitation</li>
+                        </ul>
+                    </div>
+                    <div class="bg-gray-50 p-8 rounded-lg shadow-md reveal" style="transition-delay:0.1s">
+                        <h3 class="text-xl font-semibold mb-4 text-primary">Co-curricular Activities</h3>
+                        <ul class="list-disc pl-6 text-gray-700 space-y-2">
+                            <li>Annual sports meet and cultural programs</li>
+                            <li>Art, music, and dance classes</li>
+                            <li>Educational field trips</li>
+                            <li>Yoga and meditation sessions</li>
+                            <li>Student clubs and competitions</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 px-4 mt-12">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-6 md:mb-0">
+                    <div class="text-2xl font-['Pacifico'] text-white mb-4">IGPS</div>
+                    <p class="text-gray-400 max-w-xs">Indira Gandhi Public School provides quality education from Nursery to 8th Grade in Prempura, Bhopal.</p>
+                    <div class="mt-4 flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors cursor-pointer">
+                            <i class="ri-facebook-fill ri-lg"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors cursor-pointer">
+                            <i class="ri-instagram-line ri-lg"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors cursor-pointer">
+                            <i class="ri-youtube-line ri-lg"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="IGPS.html#home" class="text-gray-400 hover:text-white transition-colors cursor-pointer">Home</a></li>
+                        <li><a href="about.html" class="text-gray-400 hover:text-white transition-colors cursor-pointer">About Us</a></li>
+                        <li><a href="IGPS.html#academics" class="text-gray-400 hover:text-white transition-colors cursor-pointer">Academics</a></li>
+                        <li><a href="IGPS.html#admissions" class="text-gray-400 hover:text-white transition-colors cursor-pointer">Admissions</a></li>
+                        <li><a href="IGPS.html#contact" class="text-gray-400 hover:text-white transition-colors cursor-pointer">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="ri-map-pin-line ri-lg text-primary mt-1 mr-2"></i>
+                            <span class="text-gray-400">69CF+Q5Q, Prempura, Bhopal, Madhya Pradesh 462002</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-phone-line ri-lg text-primary mt-1 mr-2"></i>
+                            <span class="text-gray-400">+91 9669872269</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-mail-line ri-lg text-primary mt-1 mr-2"></i>
+                            <span class="text-gray-400">igpsbhopal@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 pt-6 border-t border-gray-800 text-center text-gray-500">
+                <p>&copy; 2025 Indira Gandhi Public School. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <script>
+        // Mobile Menu Toggle
+        document.getElementById('menuBtn').addEventListener('click', function () {
+            const mobileMenu = document.getElementById('mobileMenu');
+            if (mobileMenu.classList.contains('hidden')) {
+                mobileMenu.classList.remove('hidden');
+                this.innerHTML = '<i class="ri-close-line ri-lg"></i>';
+            } else {
+                mobileMenu.classList.add('hidden');
+                this.innerHTML = '<i class="ri-menu-line ri-lg"></i>';
+            }
+        });
+        // Close mobile menu when clicking on a link
+        document.querySelectorAll('#mobileMenu a').forEach(link => {
+            link.addEventListener('click', function () {
+                document.getElementById('mobileMenu').classList.add('hidden');
+                document.getElementById('menuBtn').innerHTML = '<i class="ri-menu-line ri-lg"></i>';
+            });
+        });
+        // Reveal Animation
+        function revealOnScroll() {
+            const reveals = document.querySelectorAll('.reveal');
+            reveals.forEach(element => {
+                const windowHeight = window.innerHeight;
+                const elementTop = element.getBoundingClientRect().top;
+                const elementVisible = 150;
+                if (elementTop < windowHeight - elementVisible) {
+                    element.classList.add('active');
+                }
+            });
+        }
+        window.addEventListener('scroll', revealOnScroll);
+        revealOnScroll();
+        // Counter Animation
+        function animateCounters() {
+            const counters = document.querySelectorAll('.counter');
+            const speed = 200;
+            counters.forEach(counter => {
+                const target = +counter.getAttribute('data-target');
+                let count = 0;
+                const updateCount = () => {
+                    const increment = target / speed;
+                    if (count < target) {
+                        count += increment;
+                        counter.innerText = Math.ceil(count);
+                        setTimeout(updateCount, 1);
+                    } else {
+                        counter.innerText = target;
+                    }
+                };
+                updateCount();
+            });
+        }
+        // Trigger counter animation when counters are in view
+        const counterSection = document.querySelector('.counter')?.closest('section');
+        if (counterSection) {
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        animateCounters();
+                        observer.unobserve(entry.target);
+                    }
+                });
+            });
+            observer.observe(counterSection);
+        }
+    </script>
+</body>
+</html>

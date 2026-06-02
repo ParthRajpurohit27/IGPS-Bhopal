@@ -1,0 +1,784 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Indira Gandhi Public School - Prempura, Bhopal</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#4F46E5', secondary: '#F59E0B' }, borderRadius: { 'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px' } } } }</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Pacifico&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <link rel="stylesheet" href="igps.css">
+</head>
+
+<body class="bg-gray-50">
+    <div class="preloader" id="preloader">
+        <div class="loader-container">
+            <img src="https://i.postimg.cc/fWxPrJMh/single-without-bg.png" alt="IGPS Logo" class="logo">
+            <div class="loader"></div>
+            <div class="loader-slidebar"></div>
+        </div>
+    </div>
+    <!-- Header -->
+    <header class="fixed top-0 left-0 w-full bg-white shadow-sm z-50" id="my-index">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <img src="https://i.postimg.cc/fWxPrJMh/single-without-bg.png" alt="IGPS Logo" class="h-12 md:h-14">
+
+            <nav class="hidden md:flex items-center space-x-6">
+                <a href="#home" class="text-gray-700 hover:text-primary transition-colors">Home</a>
+                <a href="about.html" class="text-gray-700 hover:text-primary transition-colors">About</a>
+                <a href="#academics" class="text-gray-700 hover:text-primary transition-colors">Academics</a>
+                <a href="#admissions" class="text-gray-700 hover:text-primary transition-colors">Admissions</a>
+                <a href="#contact" class="text-gray-700 hover:text-primary transition-colors">Contact</a>
+            </nav>
+            <div class="flex items-center space-x-4">
+                <a href="#admissions"
+                    class="hidden md:block bg-primary text-white px-4 py-2 !rounded-button hover:bg-primary/90 transition-colors cursor-pointer">Apply
+                    Now</a>
+                <button id="menuBtn"
+                    class="md:hidden w-10 h-10 flex items-center justify-center text-gray-700 cursor-pointer">
+                    <i class="ri-menu-line ri-lg"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden bg-white shadow-lg absolute top-full left-0 w-full py-4 px-4 md:hidden">
+            <div class="flex flex-col space-y-4">
+                <a href="#home"
+                    class="text-gray-700 hover:text-primary transition-colors py-2 border-b border-gray-100">Home</a>
+                <a href="about.html"
+                    class="text-gray-700 hover:text-primary transition-colors py-2 border-b border-gray-100">About</a>
+                <a href="#academics"
+                    class="text-gray-700 hover:text-primary transition-colors py-2 border-b border-gray-100">Academics</a>
+                <a href="#admissions"
+                    class="text-gray-700 hover:text-primary transition-colors py-2 border-b border-gray-100">Admissions</a>
+                <a href="#gallery"
+                    class="text-gray-700 hover:text-primary transition-colors py-2 border-b border-gray-100">Gallery</a>
+                <a href="#contact" class="text-gray-700 hover:text-primary transition-colors py-2">Contact</a>
+                <a href="#admissions"
+                    class="bg-primary text-white px-4 py-2 !rounded-button text-center hover:bg-primary/90 transition-colors cursor-pointer">Apply
+                    Now</a>
+            </div>
+        </div>
+    </header>
+    <main class="pt-16">
+        <!-- Hero Section -->
+        <section id="home" class="pt-4">
+            <div class="hero-slider">
+                <div class="slide active"
+                    style="background-image: url('https://i.postimg.cc/qvYfg67Y/Whats-App-1-Image-2025-04-24-at-15-01-33-42cf1757.jpgx')">
+                    <div
+                        class="absolute inset-0 bg-black/30 flex flex-col justify-center items-center text-center px-4">
+                        <h1 class="text-white text-3xl md:text-4xl font-bold mb-2">
+                            Indira Gandhi Public School
+                        </h1>
+                        <p class="text-white text-lg md:text-xl mb-6">Located in Prempura, Bhopal</p>
+                        <a href="#contact"
+                            class="bg-primary text-white px-6 py-3 !rounded-button hover:bg-primary/90 transition-colors cursor-pointer">Visit
+                            Us</a>
+                    </div>
+                </div>
+
+                <div class="slide"
+                    style="background-image: url('https://readdy.ai/api/search-image?query=elementary%20school%20students%20engaged%20in%20science%20experiment%20in%20laboratory%2C%20colorful%20education%20environment%2C%20diverse%20children%2C%20professional%20education%20photography%2C%20bright%20and%20clean%20classroom&width=375&height=480&seq=2&orientation=portrait')">
+                    <div
+                        class="absolute inset-0 bg-black/30 flex flex-col justify-center items-center text-center px-4">
+                        <h1 class="text-white text-3xl md:text-4xl font-bold mb-2">Quality Education</h1>
+                        <p class="text-white text-lg md:text-xl mb-6">Developing Skills for the Future</p>
+                        <a href="#academics"
+                            class="bg-primary text-white px-6 py-3 !rounded-button hover:bg-primary/90 transition-colors cursor-pointer">Our
+                            Academics</a>
+                    </div>
+                </div>
+
+
+                <div class="slide"
+                    style="background-image: url('https://readdy.ai/api/search-image?query=happy%20diverse%20elementary%20school%20students%20in%20uniform%20smiling%20at%20camera%2C%20in%20a%20modern%20classroom%20setting%2C%20natural%20lighting%2C%20cheerful%20atmosphere%2C%20high%20quality%20professional%20photography&width=375&height=480&seq=1&orientation=portrait')">
+                    <div
+                        class="absolute inset-0 bg-black/30 flex flex-col justify-center items-center text-center px-4">
+                        <h1 class="text-white text-3xl md:text-4xl font-bold mb-2">State-of-the-Art Campus</h1>
+                        <p class="text-white text-lg md:text-xl mb-6">Nurturing Minds, Building Futures</p>
+                        <a href="#about"
+                            class="bg-primary text-white px-6 py-3 !rounded-button hover:bg-primary/90 transition-colors cursor-pointer">Learn
+                            More</a>
+                    </div>
+                </div>
+            </div>
+
+
+            </div>
+            </div>
+        </section>
+        <!-- my floting text  -->
+        <a href="#admissions">
+
+            <div class="floating-text-container">
+                <div class="floating-text">
+                    📢 Admissions Open for 2025–26 |  – Nursery to Class 8 | Indira Gandhi Public School,
+                    Prempura,Bhopal
+                </div>
+            </div>
+
+        </a>
+
+        <!-- Welcome Section -->
+        <section class="py-12 px-4">
+            <div class="container mx-auto">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 mb-8 md:mb-0 reveal">
+                        <h2 class="text-2xl md:text-3xl font-bold text-gray-800 mb-4">Welcome to <span
+                                class="text-primary">Indira Gandhi Public School</span></h2>
+                        <p class="text-gray-600 mb-6">Founded by Mr. Avdhesh Rajpurohit, our school is committed to
+                            providing quality education from Nursery to 8th Grade. We follow the MP Board curriculum
+                            while focusing on holistic development of each child.</p>
+                        <p class="text-gray-600 mb-6">At IGPS, we believe in creating a nurturing environment where
+                            children can explore, learn, and grow. Our dedicated teachers and modern facilities ensure
+                            that students receive the best education possible.</p>
+                        <a href="#about"
+                            class="inline-block bg-primary text-white px-6 py-3 !rounded-button hover:bg-primary/90 transition-colors cursor-pointer">About
+                            Us</a>
+                    </div>
+                    <div class="md:w-1/2 grid grid-cols-2 gap-6 reveal" style="transition-delay: 0.2s">
+                        <div
+                            class="bg-white p-6 rounded-lg shadow-md text-center transform hover:scale-105 transition-transform">
+                            <div
+                                class="w-16 h-16 flex items-center justify-center mx-auto bg-primary/10 rounded-full mb-4">
+                                <i class="ri-user-line ri-xl text-primary"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 counter" data-target="150">0</h3>
+                            <p class="text-gray-600">Students</p>
+                        </div>
+                        <div
+                            class="bg-white p-6 rounded-lg shadow-md text-center transform hover:scale-105 transition-transform">
+                            <div
+                                class="w-16 h-16 flex items-center justify-center mx-auto bg-secondary/10 rounded-full mb-4">
+                                <i class="ri-user-star-line ri-xl text-secondary"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 counter" data-target="10">0</h3>
+                            <p class="text-gray-600">Teachers</p>
+                        </div>
+                        <div
+                            class="bg-white p-6 rounded-lg shadow-md text-center transform hover:scale-105 transition-transform">
+                            <div
+                                class="w-16 h-16 flex items-center justify-center mx-auto bg-purple-100 rounded-full mb-4">
+                                <i class="ri-award-line ri-xl text-purple-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-gray-800 counter" data-target="32">0</h3>
+                            <p class="text-gray-600">Years of Excellence</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Key Highlights -->
+        <section class="py-12 px-4 bg-gray-100">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-10 reveal">Why Choose <span
+                        class="text-primary">IGPS</span></h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center reveal" style="transition-delay: 0.1s">
+                        <div class="w-16 h-16 flex items-center justify-center mx-auto bg-primary/10 rounded-full mb-4">
+                            <i class="ri-book-open-line ri-xl text-primary"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Quality Education</h3>
+                        <p class="text-gray-600 text-sm">MP Board curriculum with modern teaching methods</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center reveal" style="transition-delay: 0.2s">
+                        <div
+                            class="w-16 h-16 flex items-center justify-center mx-auto bg-secondary/10 rounded-full mb-4">
+                            <i class="ri-shield-check-line ri-xl text-secondary"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Safe Environment</h3>
+                        <p class="text-gray-600 text-sm">Secure campus and trained staff</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center reveal" style="transition-delay: 0.3s">
+                        <div class="w-16 h-16 flex items-center justify-center mx-auto bg-green-100 rounded-full mb-4">
+                            <i class="ri-user-star-line ri-xl text-green-600"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Skilled Teachers</h3>
+                        <p class="text-gray-600 text-sm">Experienced educators dedicated to student success</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md text-center reveal" style="transition-delay: 0.4s">
+                        <div class="w-16 h-16 flex items-center justify-center mx-auto bg-purple-100 rounded-full mb-4">
+                            <i class="ri-palette-line ri-xl text-purple-600"></i>
+                        </div>
+                        <h3 class="text-lg font-semibold text-gray-800 mb-2">Activities</h3>
+                        <p class="text-gray-600 text-sm">Sports, arts, and cultural programs for holistic growth</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- About Preview -->
+        <section id="about" class="relative py-16 px-4"
+            style="background-image: url('https://readdy.ai/api/search-image?query=modern%20school%20classroom%20with%20learning%20materials%2C%20colorful%20educational%20posters%20on%20wall%2C%20empty%20classroom%20with%20natural%20lighting%2C%20professional%20education%20photography%2C%20bright%20and%20clean&width=375&height=300&seq=4&orientation=landscape'); background-size: cover; background-position: center;">
+            <div class="absolute inset-0 bg-gradient-to-r from-primary/90 to-primary/70"></div>
+            <div class="container mx-auto relative z-10">
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 mb-8 md:mb-0 reveal">
+                        <div class="md:w-1/2 mb-8 md:mb-0 reveal">
+                            <img src="https://i.postimg.cc/J0gW30LY/national.jpg" alt="About Our School"
+                                class="rounded-lg shadow-lg w-full h-[300px] object-cover">
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 text-white reveal" style="transition-delay: 0.2s">
+                        <h2 class="text-2xl md:text-3xl font-bold mb-4">About Our School</h2>
+                        <p class="mb-4">Indira Gandhi Public School was established in 1993 by Mr. Avdhesh Rajpurohit
+                            with a vision to provide quality education to children in Prempura, Bhopal. Our school is
+                            affiliated with the MP Board and offers classes from Nursery to 8th Grade.</p>
+                        <p class="mb-6">We focus on creating a balanced learning environment that nurtures academic
+                            excellence, physical development, and moral values. Our mission is to empower every students
+                            to
+                            become responsible citizens and lifelong learners.</p>
+                        <div class="flex space-x-4">
+                            <a href="#academics"
+                                class="bg-white text-primary px-6 py-3 !rounded-button hover:bg-gray-100 transition-colors cursor-pointer">Our
+                                Academics</a>
+                            <a href="#contact"
+                                class="bg-transparent border border-white text-white px-6 py-3 !rounded-button hover:bg-white/10 transition-colors cursor-pointer">Contact
+                                Us</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Academics Section -->
+        <section id="academics" class="py-12 px-4">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-10 reveal">Our <span
+                        class="text-primary">Academics</span></h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md reveal" style="transition-delay: 0.1s">
+                        <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full mb-4">
+                            <i class="ri-book-open-line ri-lg text-primary"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Curriculum</h3>
+                        <p class="text-gray-600 mb-4">We follow the MP Board curriculum with additional focus on
+                            practical learning and skill development. Our approach combines traditional teaching methods
+                            with modern educational techniques.</p>
+                        <ul class="text-gray-600 space-y-2">
+                            <li class="flex items-start">
+                                <i class="ri-check-line ri-lg text-green-600 mt-1 mr-2"></i>
+                                <span>Comprehensive MP Board syllabus</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="ri-check-line ri-lg text-green-600 mt-1 mr-2"></i>
+                                <span>Regular assessments and feedback</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="ri-check-line ri-lg text-green-600 mt-1 mr-2"></i>
+                                <span>Digital learning resources</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md reveal" style="transition-delay: 0.2s">
+                        <div class="w-12 h-12 flex items-center justify-center bg-secondary/10 rounded-full mb-4">
+                            <i class="ri-graduation-cap-line ri-lg text-secondary"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Classes Offered</h3>
+                        <p class="text-gray-600 mb-4">We provide education from Nursery to 8th Grade with
+                            age-appropriate teaching methodologies and learning environments for each level.</p>
+                        <ul class="text-gray-600 space-y-2">
+                            <li class="flex items-start">
+                                <i class="ri-check-line ri-lg text-green-600 mt-1 mr-2"></i>
+                                <span>Pre-Primary: Nursery, LKG, UKG</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="ri-check-line ri-lg text-green-600 mt-1 mr-2"></i>
+                                <span>Primary: Classes 1 to 5</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="ri-check-line ri-lg text-green-600 mt-1 mr-2"></i>
+                                <span>Middle School: Classes 6 to 8</span>
+                            </li>
+                        </ul>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md reveal" style="transition-delay: 0.3s">
+                        <div class="w-12 h-12 flex items-center justify-center bg-green-100 rounded-full mb-4">
+                            <i class="ri-basketball-line ri-lg text-green-600"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800 mb-3">Extracurricular</h3>
+                        <p class="text-gray-600">We believe in holistic development and offer various extracurricular
+                            activities to nurture talents and build confidence in our students.</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Admissions Section -->
+        <section id="admissions" class="py-12 px-4 bg-gray-100">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-10 reveal">Admission <span
+                        class="text-primary">Process</span></h2>
+                <div class="flex flex-col md:flex-row items-center">
+                    <div class="md:w-1/2 mb-8 md:mb-0 reveal">
+                        <img src="https://readdy.ai/api/search-image?query=parent%20and%20child%20at%20school%20admission%20office%2C%20Indian%20family%2C%20professional%20discussing%20with%20school%20staff%2C%20office%20setting%20with%20admission%20forms%2C%20warm%20lighting%2C%20professional%20photography&width=375&height=300&seq=6&orientation=landscape"
+                            alt="Admission Process" class="rounded-lg shadow-lg w-full">
+                    </div>
+                    <div class="md:w-1/2 md:pl-8 reveal" style="transition-delay: 0.2s">
+                        <h3 class="text-xl font-semibold text-gray-800 mb-4">How to Apply</h3>
+                        <ol class="space-y-4 text-gray-600">
+                            <li class="flex">
+                                <div
+                                    class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-primary text-white rounded-full mr-3">
+                                    1</div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800">Collect Application Form</h4>
+                                    <p>Visit our school office to collect the application form.</p>
+                                </div>
+                            </li>
+                            <li class="flex">
+                                <div
+                                    class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-primary text-white rounded-full mr-3">
+                                    2</div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800">Submit Completed Form</h4>
+                                    <p>Return the filled form along with required documents.</p>
+                                </div>
+                            </li>
+                            <li class="flex">
+                                <div
+                                    class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-primary text-white rounded-full mr-3">
+                                    3</div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800">Entrance Assessment</h4>
+                                    <p>Students may be required to take an assessment test.</p>
+                                </div>
+                            </li>
+                            <li class="flex">
+                                <div
+                                    class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-primary text-white rounded-full mr-3">
+                                    4</div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800">Interview</h4>
+                                    <p>Parents and students will be called for an interview.</p>
+                                </div>
+                            </li>
+                            <li class="flex">
+                                <div
+                                    class="flex-shrink-0 w-8 h-8 flex items-center justify-center bg-primary text-white rounded-full mr-3">
+                                    5</div>
+                                <div>
+                                    <h4 class="font-medium text-gray-800">Confirmation</h4>
+                                    <p>Selected students will receive admission confirmation.</p>
+                                </div>
+                            </li>
+                        </ol>
+                    </div>
+                </div>
+                <div class="mt-12 bg-white p-6 rounded-lg shadow-md reveal">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Required Documents</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <ul class="text-gray-600 space-y-2">
+                            <li class="flex items-start">
+                                <i class="ri-file-list-line ri-lg text-primary mt-1 mr-2"></i>
+                                <span>Completed application form</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="ri-file-list-line ri-lg text-primary mt-1 mr-2"></i>
+                                <span>Birth certificate</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="ri-file-list-line ri-lg text-primary mt-1 mr-2"></i>
+                                <span>Previous school records (if applicable)</span>
+                            </li>
+                        </ul>
+                        <ul class="text-gray-600 space-y-2">
+                            <li class="flex items-start">
+                                <i class="ri-file-list-line ri-lg text-primary mt-1 mr-2"></i>
+                                <span>Passport size photographs</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="ri-file-list-line ri-lg text-primary mt-1 mr-2"></i>
+                                <span>Address proof</span>
+                            </li>
+                            <li class="flex items-start">
+                                <i class="ri-file-list-line ri-lg text-primary mt-1 mr-2"></i>
+                                <span>Aadhar card of student and parents</span>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+                <div class="mt-12 bg-white p-6 rounded-lg shadow-md reveal">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4">Age Criteria</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full">
+                            <thead>
+                                <tr>
+                                    <th class="px-4 py-2 bg-gray-100 text-left text-gray-800">Class</th>
+                                    <th class="px-4 py-2 bg-gray-100 text-left text-gray-800">Age Requirement (as of
+                                        April 1, 2025)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="border px-4 py-2 text-gray-600">Nursery</td>
+                                    <td class="border px-4 py-2 text-gray-600">3+ years</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 text-gray-600">LKG</td>
+                                    <td class="border px-4 py-2 text-gray-600">4+ years</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 text-gray-600">UKG</td>
+                                    <td class="border px-4 py-2 text-gray-600">5+ years</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 text-gray-600">Class 1</td>
+                                    <td class="border px-4 py-2 text-gray-600">6+ years</td>
+                                </tr>
+                                <tr>
+                                    <td class="border px-4 py-2 text-gray-600">Higher Classes</td>
+                                    <td class="border px-4 py-2 text-gray-600">Age appropriate to the class</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Testimonials Section -->
+        <section class="py-12 px-4 bg-gray-100">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-10 reveal">What Parents <span
+                        class="text-primary">Say</span></h2>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-lg shadow-md reveal" style="transition-delay: 0.1s">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full mr-4">
+                                <i class="ri-user-line ri-lg text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">Priya Sharma</h4>
+                                <p class="text-gray-500 text-sm">Parent of Class 5 Student</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 italic">"My daughter has shown remarkable improvement since joining
+                            IGPS. The teachers are caring and attentive to individual needs. The school provides a
+                            perfect balance of academics and extracurricular activities."</p>
+                        <div class="mt-4 flex text-yellow-400">
+                            <i class="ri-star-fill ri-sm"></i>
+                            <i class="ri-star-fill ri-sm"></i>
+                            <i class="ri-star-fill ri-sm"></i>
+                            <i class="ri-star-fill ri-sm"></i>
+                            <i class="ri-star-fill ri-sm"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md reveal" style="transition-delay: 0.2s">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full mr-4">
+                                <i class="ri-user-line ri-lg text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">Rajesh Verma</h4>
+                                <p class="text-gray-500 text-sm">Parent of Class 3 Student</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 italic">"The school's focus on holistic development is impressive. My
+                            son has not only improved academically but has also developed confidence through
+                            participation in various activities. The faculty is supportive and communicative."</p>
+                        <div class="mt-4 flex text-yellow-400">
+                            <i class="ri-star-fill ri-sm"></i>
+                            <i class="ri-star-fill ri-sm"></i>
+                            <i class="ri-star-fill ri-sm"></i>
+                            <i class="ri-star-fill ri-sm"></i>
+                            <i class="ri-star-fill ri-sm"></i>
+                        </div>
+                    </div>
+                    <div class="bg-white p-6 rounded-lg shadow-md reveal" style="transition-delay: 0.3s">
+                        <div class="flex items-center mb-4">
+                            <div class="w-12 h-12 flex items-center justify-center bg-primary/10 rounded-full mr-4">
+                                <i class="ri-user-line ri-lg text-primary"></i>
+                            </div>
+                            <div>
+                                <h4 class="font-medium text-gray-800">Anita Patel</h4>
+                                <p class="text-gray-500 text-sm">Parent of UKG Student</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-600 italic">"IGPS provides a nurturing environment for young children. The
+                            pre-primary teachers are patient and loving. My daughter loves going to school every day.
+                            The school's infrastructure and safety measures are excellent."</p>
+                        <div class="mt-4 flex text-yellow-400">
+                            <i class="ri-star-fill ri-sm"></i>
+                            <i class="ri-star-fill ri-sm"></i>
+                            <i class="ri-star-fill ri-sm"></i>
+                            <i class="ri-star-fill ri-sm"></i>
+                            <i class="ri-star-half-fill ri-sm"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Quick Links -->
+        <section class="py-8 px-4">
+            <div class="container mx-auto">
+                <div
+                    class="flex flex-col md:flex-row justify-center items-center space-y-4 md:space-y-0 md:space-x-6 reveal">
+                    <a href="#admissions"
+                        class="w-full md:w-auto bg-primary text-white px-6 py-4 !rounded-button shadow-md hover:bg-primary/90 transition-colors flex items-center justify-center space-x-2 cursor-pointer floating-btn">
+                        <i class="ri-file-list-line ri-lg"></i>
+                        <span>Admission Process</span>
+
+                        <a href="#contact"
+                            class="w-full md:w-auto bg-green-600 text-white px-6 py-4 !rounded-button shadow-md hover:bg-green-700 transition-colors flex items-center justify-center space-x-2 cursor-pointer floating-btn">
+                            <i class="ri-phone-line ri-lg"></i>
+                            <span>Contact Us</span>
+                        </a>
+                </div>
+            </div>
+        </section>
+
+
+        
+        <!-- Contact Section -->
+        <section id="contact" class="py-12 px-4 bg-gray-100">
+            <div class="container mx-auto">
+                <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-10 reveal">Get in <span
+                        class="text-primary">Touch</span></h2>
+                <div class="flex flex-col md:flex-row">
+                    <div class="md:w-1/2 mb-8 md:mb-0 reveal">
+                        <div class="bg-white p-6 rounded-lg shadow-md h-full">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Contact Information</h3>
+                            <div class="space-y-4">
+                                <div class="flex items-start">
+                                    <div
+                                        class="w-10 h-10 flex items-center justify-center bg-primary/10 rounded-full mr-4 mt-1">
+                                        <i class="ri-map-pin-line ri-lg text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">Address</h4>
+                                        <p class="text-gray-600">69CF+Q5Q, Prempura, Bhopal, Madhya Pradesh 462002,
+                                            India</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div
+                                        class="w-10 h-10 flex items-center justify-center bg-primary/10 rounded-full mr-4 mt-1">
+                                        <i class="ri-phone-line ri-lg text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">Phone</h4>
+                                        <p class="text-gray-600">+91 9669872269</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div
+                                        class="w-10 h-10 flex items-center justify-center bg-primary/10 rounded-full mr-4 mt-1">
+                                        <i class="ri-mail-line ri-lg text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">Email</h4>
+                                        <p class="text-gray-600">apurohit35419@gmail.com</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start">
+                                    <div
+                                        class="w-10 h-10 flex items-center justify-center bg-primary/10 rounded-full mr-4 mt-1">
+                                        <i class="ri-time-line ri-lg text-primary"></i>
+                                    </div>
+                                    <div>
+                                        <h4 class="font-medium text-gray-800">Office Hours</h4>
+                                        <p class="text-gray-600">Monday to Saturday: 8:00 AM - 4:00 PM</p>
+                                        <p class="text-gray-600">Sunday: Closed</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="mt-6">
+                                <h4 class="font-medium text-gray-800 mb-3">Follow Us</h4>
+                                <div class="flex space-x-4">
+                                    <a href="#"
+                                        class="w-10 h-10 flex items-center justify-center bg-blue-100 text-blue-600 rounded-full hover:bg-blue-200 transition-colors cursor-pointer follow-us-btn">
+                                        <i class="ri-facebook-fill ri-lg"></i>
+                                    </a>
+                                    <a href="#"
+                                        class="w-10 h-10 flex items-center justify-center bg-pink-100 text-pink-600 rounded-full hover:bg-pink-200 transition-colors cursor-pointer follow-us-btn">
+                                        <i class="ri-instagram-line ri-lg"></i>
+                                    </a>
+                                    <a href="#"
+                                        class="w-10 h-10 flex items-center justify-center bg-red-100 text-red-600 rounded-full hover:bg-red-200 transition-colors cursor-pointer follow-us-btn">
+                                        <i class="ri-youtube-line ri-lg"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="md:w-1/2 md:pl-6 reveal" style="transition-delay: 0.2s">
+                        <div class="bg-white p-6 rounded-lg shadow-md">
+                            <h3 class="text-xl font-semibold text-gray-800 mb-4">Send Us a Message</h3>
+                            <form id="contactForm">
+                                <div class="mb-4">
+                                    <label for="name" class="block text-gray-700 mb-2">Name</label>
+                                    <input type="text" id="name"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                                        required>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="email" class="block text-gray-700 mb-2">Email</label>
+                                    <input type="email" id="email"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                                        required>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="phone" class="block text-gray-700 mb-2">Phone</label>
+                                    <input type="tel" id="phone"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                                        required>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="subject" class="block text-gray-700 mb-2">Subject</label>
+                                    <select id="subject"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                                        required>
+                                        <option value="">Select a subject</option>
+                                        <option value="admission">Admission Inquiry</option>
+                                        <option value="general">General Information</option>
+                                        <option value="feedback">Feedback</option>
+                                        <option value="other">Other</option>
+                                    </select>
+                                </div>
+                                <div class="mb-4">
+                                    <label for="message" class="block text-gray-700 mb-2">Message</label>
+                                    <textarea id="message" rows="4"
+                                        class="w-full px-4 py-2 border border-gray-300 rounded focus:outline-none focus:ring-2 focus:ring-primary/50 focus:border-primary"
+                                        required></textarea>
+                                </div>
+                                <button id="sendMessageBtn" type="submit"
+                                    class="w-full bg-primary text-white px-6 py-3 !rounded-button hover:bg-primary/90 transition-colors cursor-pointer">
+                                    Send Message</button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+                <div class="mt-12 reveal">
+                    <h3 class="text-xl font-semibold text-gray-800 mb-4 text-center">Our Location</h3>
+                    <div class="rounded-lg shadow-md overflow-hidden h-64 bg-cover bg-center"
+                        style="background-image: url('https://i.postimg.cc/pVGPTbpd/Screenshot-48.png')">
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- 3D Image Slider (Swiper js ka Coverflow Effect ) -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
+    />
+    <div class="py-12 bg-gray-100">
+      <div class="container mx-auto">
+        <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-8">Indira Gandhi Public School</h2>
+        <div class="swiper mySwiper" style="width:100%;max-width:800px;margin:auto;">
+          <div class="swiper-wrapper">
+            <div class="swiper-slide">
+              <img src="https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=400&q=80" alt="Classroom Learning" class="rounded-lg shadow-lg w-full h-64 object-cover" />
+            </div>
+            
+            
+          
+          
+            <div class="swiper-slide">
+              <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=400&q=80" alt="Student Group Work" class="rounded-lg shadow-lg w-full h-64 object-cover" />
+            </div>
+          
+        
+          </div>
+          <!-- Add Pagination -->
+          <div class="swiper-pagination"></div>
+        </div>
+      </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+    <!-- Footer -->
+    <footer class="bg-gray-900 text-white py-8 px-4">
+        <div class="container mx-auto">
+            <div class="flex flex-col md:flex-row justify-between">
+                <div class="mb-6 md:mb-0">
+                    <div class="text-2xl font-['Pacifico'] text-white mb-4">IGPS</div>
+                    <p class="text-gray-400 max-w-xs">Indira Gandhi Public School provides quality education from
+                        Nursery to 8th Grade in Prempura, Bhopal.</p>
+                    <div class="mt-4 flex space-x-4">
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors cursor-pointer">
+                            <i class="ri-facebook-fill ri-lg"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors cursor-pointer">
+                            <i class="ri-instagram-line ri-lg"></i>
+                        </a>
+                        <a href="#" class="text-gray-400 hover:text-white transition-colors cursor-pointer">
+                            <i class="ri-youtube-line ri-lg"></i>
+                        </a>
+                    </div>
+                </div>
+                <div class="mb-6 md:mb-0">
+                    <h3 class="text-lg font-semibold mb-4">Quick Links</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#home"
+                                class="text-gray-400 hover:text-white transition-colors cursor-pointer">Home</a></li>
+                        <li><a href="about.html"
+                                class="text-gray-400 hover:text-white transition-colors cursor-pointer">About Us</a>
+                        </li>
+                        <li><a href="#academics"
+                                class="text-gray-400 hover:text-white transition-colors cursor-pointer">Academics</a>
+                        </li>
+                        <li><a href="#admissions"
+                                class="text-gray-400 hover:text-white transition-colors cursor-pointer">Admissions</a>
+                        </li>
+                        <li><a href="#contact"
+                                class="text-gray-400 hover:text-white transition-colors cursor-pointer">Contact</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contact Us</h3>
+                    <ul class="space-y-2">
+                        <li class="flex items-start">
+                            <i class="ri-map-pin-line ri-lg text-primary mt-1 mr-2"></i>
+                            <span class="text-gray-400">69CF+Q5Q, Prempura, Bhopal, Madhya Pradesh 462002</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-phone-line ri-lg text-primary mt-1 mr-2"></i>
+                            <span class="text-gray-400">+91 9669872269</span>
+                        </li>
+                        <li class="flex items-start">
+                            <i class="ri-mail-line ri-lg text-primary mt-1 mr-2"></i>
+                            <span class="text-gray-400">igpsbhopal@gmail.com</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            <div class="mt-8 pt-6 border-t border-gray-800 text-center text-gray-500">
+                <p>&copy; 2025 Indira Gandhi Public School. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+    <!-- Floating Buttons -->
+    <a href="tel:+919669872269"
+        class="fixed bottom-20 right-4 w-12 h-12 bg-green-600 text-white rounded-full shadow-lg flex items-center justify-center z-40 floating-btn cursor-pointer">
+        <i class="ri-phone-fill ri-lg"></i>
+    </a>
+    <a href="https://wa.me/919669872269"
+        class="fixed bottom-8 right-4 w-12 h-12 bg-green-500 text-white rounded-full shadow-lg flex items-center justify-center z-40 floating-btn cursor-pointer">
+        <i class="ri-whatsapp-fill ri-lg"></i>
+    </a>
+    <!-- Back to Top Button -->
+    <button id="backToTop"
+        class="fixed bottom-32 right-4 w-12 h-12 bg-primary text-white rounded-full shadow-lg flex items-center justify-center z-40 opacity-0 invisible transition-all duration-300 cursor-pointer">
+        <i class="ri-arrow-up-line ri-lg"></i>
+    </button>
+    <!-- Success Modal -->
+    <div id="successModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
+        <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
+            <div class="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-4">
+                <i class="ri-check-line ri-2x text-green-600"></i>
+            </div>
+            <h3 class="text-xl font-semibold text-gray-800 text-center mb-2">Message Sent!</h3>
+            <p class="text-gray-600 text-center mb-6">Thank you for contacting us. We will get back to you soon.</p>
+            <button id="closeModal"
+                class="w-full bg-primary text-white px-4 py-2 !rounded-button hover:bg-primary/90 transition-colors cursor-pointer">Close</button>
+        </div>
+    </div>
+    <script src="igps.js"></script>
+</body>
+
+</html>

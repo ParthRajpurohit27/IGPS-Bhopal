@@ -1,0 +1,9 @@
+.about-hero-bg {
+    background-image: url('https://readdy.ai/api/search-image?query=modern%20school%20classroom%20with%20learning%20materials%2C%20colorful%20educational%20posters%20on%20wall%2C%20empty%20classroom%20with%20natural%20lighting%2C%20professional%20education%20photography%2C%20bright%20and%20clean&width=1200&height=400&seq=4&orientation=landscape');
+    background-size: cover;
+    background-position: center;
+}
+
+.about background {
+    background-color: #f0f0f0;
+}
