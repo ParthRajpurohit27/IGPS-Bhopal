@@ -262,11 +262,17 @@
                 sectionFilter.appendChild(opt);
             });
 
-            document.getElementById("statTotal").textContent = ALL_STUDENTS.length;
-            document.getElementById("statAadharPending").textContent = ALL_STUDENTS.filter(s => !s.aadhar_number).length;
-            document.getElementById("statApaarPending").textContent = ALL_STUDENTS.filter(s => !s.apaar_id).length;
-
             render();
+        }
+
+        // Same as getFiltered() but ignores tab/status/search — used for the top stat cards
+        // so they reflect the selected Class/Section, not the status filter.
+        function getClassScoped() {
+            return ALL_STUDENTS.filter(s => {
+                if (currentClass !== "all" && String(s.class) !== currentClass) return false;
+                if (currentSection !== "all" && s.section !== currentSection) return false;
+                return true;
+            });
         }
 
         function getFiltered() {
@@ -319,6 +325,11 @@
         }
 
         function render() {
+            const scoped = getClassScoped();
+            document.getElementById("statTotal").textContent = scoped.length;
+            document.getElementById("statAadharPending").textContent = scoped.filter(s => !s.aadhar_number).length;
+            document.getElementById("statApaarPending").textContent = scoped.filter(s => !s.apaar_id).length;
+
             const filtered = getFiltered();
             document.getElementById("statShowing").textContent = filtered.length;
 
