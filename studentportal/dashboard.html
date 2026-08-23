@@ -142,7 +142,12 @@
         <div class="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[85vh] overflow-y-auto">
             <div class="flex items-center justify-between px-5 py-4 border-b sticky top-0 bg-white">
                 <h3 class="font-semibold text-gray-800">Student Details</h3>
-                <button id="closeModal" class="text-gray-400 hover:text-gray-700"><i class="ri-close-line text-xl"></i></button>
+                <div class="flex items-center gap-3">
+                    <button id="editBtn" class="text-primary hover:text-primary/80 text-sm font-medium">
+                        <i class="ri-edit-line"></i> Edit
+                    </button>
+                    <button id="closeModal" class="text-gray-400 hover:text-gray-700"><i class="ri-close-line text-xl"></i></button>
+                </div>
             </div>
             <div id="modalBody" class="p-5 space-y-3 text-sm"></div>
         </div>
@@ -151,8 +156,30 @@
     <!-- Hidden container used only when generating a PDF/Image report (not shown on screen) -->
     <div id="reportRoot" style="position:fixed; left:-9999px; top:0; width:800px; background:#fff;"></div>
 
+    <!-- Footer: Amendment History -->
+    <footer class="container mx-auto px-3 sm:px-4 py-6 text-center">
+        <button id="openHistoryBtn" class="text-xs sm:text-sm text-gray-500 hover:text-primary border border-gray-200 px-4 py-2 !rounded-button">
+            <i class="ri-history-line mr-1"></i>View Last Amendments History
+        </button>
+    </footer>
+
+    <!-- Amendment History Modal -->
+    <div id="historyModal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[85vh] overflow-y-auto">
+            <div class="flex items-center justify-between px-5 py-4 border-b sticky top-0 bg-white">
+                <h3 class="font-semibold text-gray-800">Last Amendments History</h3>
+                <button id="closeHistoryModal" class="text-gray-400 hover:text-gray-700"><i class="ri-close-line text-xl"></i></button>
+            </div>
+            <div id="historyBody" class="p-5 space-y-3 text-sm">
+                <p class="text-gray-400 text-center py-6">Loading...</p>
+            </div>
+        </div>
+    </div>
+
     <script src="supabase-config.js"></script>
     <script>
+        let CURRENT_STUDENT_ID = null;
+
         let ALL_STUDENTS = [];
         let currentClass = "all";
         let currentSection = "all";
@@ -373,6 +400,7 @@
         function openDetail(id) {
             const s = ALL_STUDENTS.find(x => String(x.id) === String(id));
             if (!s) return;
+            CURRENT_STUDENT_ID = id;
             const modalBody = document.getElementById("modalBody");
             let rows = Object.entries(FIELD_LABELS)
                 .filter(([key]) => s[key] !== undefined && s[key] !== null && s[key] !== "")
@@ -395,6 +423,164 @@
         }
         document.getElementById("closeModal").addEventListener("click", () => document.getElementById("detailModal").classList.add("hidden"));
         document.getElementById("detailModal").addEventListener("click", (e) => { if (e.target.id === "detailModal") e.target.classList.add("hidden"); });
+
+        // ---- Edit mode ----
+        document.getElementById("editBtn").addEventListener("click", () => {
+            if (!CURRENT_STUDENT_ID) return;
+            renderEditForm(CURRENT_STUDENT_ID);
+        });
+
+        function renderEditForm(id) {
+            const s = ALL_STUDENTS.find(x => String(x.id) === String(id));
+            if (!s) return;
+            const modalBody = document.getElementById("modalBody");
+
+            // Fields that already have a value -> editable inputs
+            const filledFields = Object.entries(FIELD_LABELS)
+                .filter(([key]) => s[key] !== undefined && s[key] !== null && s[key] !== "");
+
+            // Fields that are empty -> shown in the "+ Add Field" dropdown
+            const emptyFields = Object.entries(FIELD_LABELS)
+                .filter(([key]) => s[key] === undefined || s[key] === null || s[key] === "");
+
+            const inputRow = (key, label, value) => `
+                <div class="flex flex-col gap-1" data-field-row="${key}">
+                    <label class="text-xs text-gray-400">${label}</label>
+                    <input type="text" data-field="${key}" value="${value ?? ""}"
+                        class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>`;
+
+            let html = `<div id="editFieldsWrap" class="space-y-3">`;
+            html += filledFields.map(([key, label]) => inputRow(key, label, s[key])).join("");
+            html += `</div>`;
+
+            if (emptyFields.length > 0) {
+                html += `
+                    <div class="border-t border-gray-100 mt-4 pt-4">
+                        <label class="text-xs text-gray-400 block mb-1">+ Add Field</label>
+                        <select id="addFieldSelect" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option value="">Select a field to add...</option>
+                            ${emptyFields.map(([key, label]) => `<option value="${key}">${label}</option>`).join("")}
+                        </select>
+                    </div>`;
+            }
+
+            html += `
+                <div id="editMsg" class="hidden text-sm px-3 py-2 rounded mt-4"></div>
+                <div class="flex gap-2 mt-4">
+                    <button id="saveEditBtn" class="flex-1 bg-primary text-white text-sm font-medium py-2 !rounded-button hover:bg-primary/90">
+                        Save
+                    </button>
+                    <button id="cancelEditBtn" class="flex-1 border border-gray-300 text-gray-600 text-sm font-medium py-2 !rounded-button hover:bg-gray-50">
+                        Cancel
+                    </button>
+                </div>`;
+
+            modalBody.innerHTML = html;
+
+            const addFieldSelect = document.getElementById("addFieldSelect");
+            if (addFieldSelect) {
+                addFieldSelect.addEventListener("change", () => {
+                    const key = addFieldSelect.value;
+                    if (!key) return;
+                    const label = FIELD_LABELS[key];
+                    const wrap = document.getElementById("editFieldsWrap");
+                    const div = document.createElement("div");
+                    div.innerHTML = inputRow(key, label, "");
+                    wrap.appendChild(div.firstElementChild);
+                    // remove this option so it can't be added twice
+                    addFieldSelect.querySelector(`option[value="${key}"]`).remove();
+                    addFieldSelect.value = "";
+                });
+            }
+
+            document.getElementById("cancelEditBtn").addEventListener("click", () => openDetail(id));
+            document.getElementById("saveEditBtn").addEventListener("click", () => saveEdit(id));
+        }
+
+        async function saveEdit(id) {
+            const s = ALL_STUDENTS.find(x => String(x.id) === String(id));
+            if (!s) return;
+
+            const saveBtn = document.getElementById("saveEditBtn");
+            const editMsg = document.getElementById("editMsg");
+            saveBtn.disabled = true;
+            saveBtn.textContent = "Saving...";
+
+            const updates = {};
+            document.querySelectorAll("#editFieldsWrap [data-field]").forEach(input => {
+                const key = input.dataset.field;
+                const val = input.value.trim();
+                // Only send it if the value actually changed (or is a newly added field)
+                if (val !== (s[key] ?? "")) {
+                    updates[key] = val === "" ? null : val;
+                }
+            });
+
+            if (Object.keys(updates).length === 0) {
+                openDetail(id);
+                return;
+            }
+
+            const { error } = await supabaseClient
+                .from("students")
+                .update(updates)
+                .eq("id", s.id);
+
+            if (error) {
+                editMsg.textContent = "Could not save: " + error.message;
+                editMsg.className = "text-sm px-3 py-2 rounded mt-4 bg-red-50 text-red-600 border border-red-200";
+                saveBtn.disabled = false;
+                saveBtn.textContent = "Save";
+                return;
+            }
+
+            // Update local copy so UI (badges, stats) refreshes immediately
+            Object.assign(s, updates);
+
+            render();
+            openDetail(id);
+        }
+
+        // ---- Amendment History ----
+        document.getElementById("openHistoryBtn").addEventListener("click", async () => {
+            document.getElementById("historyModal").classList.remove("hidden");
+            const historyBody = document.getElementById("historyBody");
+            historyBody.innerHTML = `<p class="text-gray-400 text-center py-6">Loading...</p>`;
+
+            const { data, error } = await supabaseClient
+                .from("student_amendments")
+                .select("*")
+                .order("changed_at", { ascending: false })
+                .limit(10);
+
+            if (error) {
+                historyBody.innerHTML = `<p class="text-red-500 text-center py-6">Could not load history: ${error.message}</p>`;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                historyBody.innerHTML = `<p class="text-gray-400 text-center py-6">No amendments yet.</p>`;
+                return;
+            }
+
+            historyBody.innerHTML = data.map(row => `
+                <div class="border border-gray-100 rounded-lg p-3">
+                    <div class="flex justify-between items-center mb-1">
+                        <span class="font-semibold text-gray-800 text-sm">${row.student_name ?? "-"}</span>
+                        <span class="text-[10px] text-gray-400">${new Date(row.changed_at).toLocaleString()}</span>
+                    </div>
+                    <p class="text-xs text-gray-500 mb-1">${FIELD_LABELS[row.field_name] ?? row.field_name}</p>
+                    <div class="flex items-center gap-2 text-xs">
+                        <span class="px-2 py-0.5 rounded bg-red-50 text-red-600">${row.old_value ?? "—"}</span>
+                        <i class="ri-arrow-right-line text-gray-300"></i>
+                        <span class="px-2 py-0.5 rounded bg-green-50 text-green-700">${row.new_value ?? "—"}</span>
+                    </div>
+                    <p class="text-[10px] text-gray-400 mt-1">Changed by: ${row.changed_by ?? "unknown"}</p>
+                </div>`).join("");
+        });
+        document.getElementById("closeHistoryModal").addEventListener("click", () => document.getElementById("historyModal").classList.add("hidden"));
+        document.getElementById("historyModal").addEventListener("click", (e) => { if (e.target.id === "historyModal") e.target.classList.add("hidden"); });
 
         // ---- Download report (PDF / Image) for the CURRENT filtered view (all matching rows, not just current page) ----
         function reportTitle() {
