@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login | Indira Gandhi Public School, Bhopal</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>tailwind.config = { theme: { extend: { colors: { primary: '#4F46E5', secondary: '#F59E0B' }, borderRadius: { 'none': '0px', 'sm': '4px', DEFAULT: '8px', 'md': '12px', 'lg': '16px', 'xl': '20px', '2xl': '24px', '3xl': '32px', 'full': '9999px', 'button': '8px' } } } }</script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .portal-card:hover { transform: translateY(-4px); box-shadow: 0 12px 24px rgba(0,0,0,0.08); }
+        .portal-card { transition: all 0.25s ease; }
+    </style>
+</head>
+
+<body class="bg-gray-50 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white shadow-sm">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <a href="index.html" class="flex items-center gap-2">
+                <img src="https://i.postimg.cc/fWxPrJMh/single-without-bg.png" alt="IGPS Logo" class="h-10 sm:h-12">
+                <span class="font-semibold text-gray-800 text-sm sm:text-base">Indira Gandhi Public School</span>
+            </a>
+            <a href="index.html" class="text-sm text-gray-500 hover:text-primary transition-colors">
+                <i class="ri-arrow-left-line mr-1"></i>Back to Website
+            </a>
+        </div>
+    </header>
+
+    <!-- Main -->
+    <main class="flex-1 flex items-center justify-center px-4 py-10">
+        <div class="w-full max-w-3xl">
+            <div class="text-center mb-8">
+                <h1 class="text-2xl sm:text-3xl font-semibold text-gray-800 mb-2">Choose Your Portal</h1>
+                <p class="text-gray-500 text-sm sm:text-base">Select the portal you want to log in to</p>
+            </div>
+
+            <div class="grid sm:grid-cols-2 gap-5">
+                <!-- Student Data Portal -->
+                <a href="studentportal/" class="portal-card block bg-white rounded-xl shadow-sm p-6 sm:p-8 border border-gray-100">
+                    <div class="w-14 h-14 rounded-full bg-primary/10 flex items-center justify-center mb-4">
+                        <i class="ri-team-line text-2xl text-primary"></i>
+                    </div>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-2">IGPS Student Data Management Portal</h2>
+                    <p class="text-sm text-gray-500 mb-4">View and manage student records, Aadhar &amp; APAAR verification status.</p>
+                    <span class="inline-flex items-center text-primary text-sm font-medium">
+                        Login <i class="ri-arrow-right-line ml-1"></i>
+                    </span>
+                </a>
+
+                <!-- School Management Portal -->
+                <a href="https://igps-bhopal-management-portal.vercel.app/" class="portal-card block bg-white rounded-xl shadow-sm p-6 sm:p-8 border border-gray-100">
+                    <div class="w-14 h-14 rounded-full bg-secondary/10 flex items-center justify-center mb-4">
+                        <i class="ri-briefcase-line text-2xl text-secondary"></i>
+                    </div>
+                    <h2 class="text-lg font-semibold text-gray-800 mb-2">IGPS School Management Portal</h2>
+                    <p class="text-sm text-gray-500 mb-4">Teacher attendance and payroll governance portal.</p>
+                    <span class="inline-flex items-center text-secondary text-sm font-medium">
+                        Login <i class="ri-arrow-right-line ml-1"></i>
+                    </span>
+                </a>
+            </div>
+
+            <p class="text-center text-xs text-gray-400 mt-8">Access restricted to authorized school staff only.</p>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-gray-100 py-4">
+        <p class="text-center text-xs text-gray-400">© 2025 Indira Gandhi Public School, Prempura, Bhopal. All rights reserved.</p>
+    </footer>
+
+</body>
+
+</html>
