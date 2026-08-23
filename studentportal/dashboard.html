@@ -141,8 +141,11 @@
     <div id="detailModal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[85vh] overflow-y-auto">
             <div class="flex items-center justify-between px-5 py-4 border-b sticky top-0 bg-white">
-                <h3 class="font-semibold text-gray-800">Student Details</h3>
+                <h3 id="modalTitle" class="font-semibold text-gray-800">Student Details</h3>
                 <div class="flex items-center gap-3">
+                    <button id="parentToggleBtn" class="text-gray-500 hover:text-primary text-xs sm:text-sm font-medium whitespace-nowrap">
+                        <i class="ri-parent-line"></i> Parent Details
+                    </button>
                     <button id="editBtn" class="text-primary hover:text-primary/80 text-sm font-medium">
                         <i class="ri-edit-line"></i> Edit
                     </button>
@@ -389,20 +392,48 @@
         document.getElementById("nextPageBtn").addEventListener("click", () => { currentPage++; render(); });
 
         // ---- Detail modal ----
-        const FIELD_LABELS = {
+        let CURRENT_VIEW_MODE = "student"; // "student" | "parent"
+
+        const STUDENT_FIELD_LABELS = {
             student_name: "Student Name", class: "Class", section: "Section", roll_number: "Roll Number",
-            date_of_birth: "Date of Birth", gender: "Gender", father_name: "Father's Name", mother_name: "Mother's Name",
-            parent_contact: "Parent Contact", alternate_contact: "Alternate Contact", address: "Address",
+            date_of_birth: "Date of Birth", gender: "Gender",
             aadhar_number: "Aadhar Number", aadhar_name: "Name as per Aadhar", apaar_id: "APAAR ID",
             admission_date: "Admission Date", blood_group: "Blood Group", category: "Category",
         };
+
+        const PARENT_CORE_FIELDS = {
+            father_name: "Father's Name",
+            father_aadhar_number: "Father's Aadhar Number",
+            parent_contact: "Father's Mobile Number",
+            mother_name: "Mother's Name",
+            mother_aadhar_number: "Mother's Aadhar Number",
+            alternate_contact: "Mother's Mobile Number",
+        };
+
+        const PARENT_FIELD_LABELS = { ...PARENT_CORE_FIELDS };
+
+        const ALL_FIELD_LABELS = { ...STUDENT_FIELD_LABELS, ...PARENT_FIELD_LABELS };
+
+        function updateModalHeader() {
+            const title = document.getElementById("modalTitle");
+            const toggleBtn = document.getElementById("parentToggleBtn");
+            if (CURRENT_VIEW_MODE === "parent") {
+                title.textContent = "Parent Details";
+                toggleBtn.innerHTML = '<i class="ri-arrow-left-line"></i> Back to Student Data';
+            } else {
+                title.textContent = "Student Details";
+                toggleBtn.innerHTML = '<i class="ri-parent-line"></i> Parent Details';
+            }
+        }
 
         function openDetail(id) {
             const s = ALL_STUDENTS.find(x => String(x.id) === String(id));
             if (!s) return;
             CURRENT_STUDENT_ID = id;
+            CURRENT_VIEW_MODE = "student";
+            updateModalHeader();
             const modalBody = document.getElementById("modalBody");
-            let rows = Object.entries(FIELD_LABELS)
+            let rows = Object.entries(STUDENT_FIELD_LABELS)
                 .filter(([key]) => s[key] !== undefined && s[key] !== null && s[key] !== "")
                 .map(([key, label]) => `
                     <div class="flex justify-between border-b border-gray-50 pb-2 gap-4">
@@ -421,14 +452,84 @@
             modalBody.innerHTML = rows || `<p class="text-gray-400">No details available.</p>`;
             document.getElementById("detailModal").classList.remove("hidden");
         }
+
+        function renderParentDetail(id) {
+            const s = ALL_STUDENTS.find(x => String(x.id) === String(id));
+            if (!s) return;
+            CURRENT_STUDENT_ID = id;
+            CURRENT_VIEW_MODE = "parent";
+            updateModalHeader();
+            const modalBody = document.getElementById("modalBody");
+
+            // All 6 parent fields ALWAYS show, empty or not.
+            // Father's info first (name, aadhar, mobile), then Mother's (name, aadhar, mobile).
+            let rows = Object.entries(PARENT_CORE_FIELDS)
+                .map(([key, label]) => {
+                    const hasValue = s[key] !== undefined && s[key] !== null && s[key] !== "";
+                    return `
+                    <div class="flex justify-between border-b border-gray-50 pb-2 gap-4">
+                        <span class="text-gray-400">${label}</span>
+                        <span class="${hasValue ? "text-gray-800 font-medium" : "text-gray-300 italic"} text-right">${hasValue ? s[key] : "Not added yet"}</span>
+                    </div>`;
+                }).join("");
+
+            modalBody.innerHTML = rows;
+            document.getElementById("detailModal").classList.remove("hidden");
+        }
+
+        document.getElementById("parentToggleBtn").addEventListener("click", () => {
+            if (!CURRENT_STUDENT_ID) return;
+            if (CURRENT_VIEW_MODE === "parent") openDetail(CURRENT_STUDENT_ID);
+            else renderParentDetail(CURRENT_STUDENT_ID);
+        });
         document.getElementById("closeModal").addEventListener("click", () => document.getElementById("detailModal").classList.add("hidden"));
         document.getElementById("detailModal").addEventListener("click", (e) => { if (e.target.id === "detailModal") e.target.classList.add("hidden"); });
 
         // ---- Edit mode ----
         document.getElementById("editBtn").addEventListener("click", () => {
             if (!CURRENT_STUDENT_ID) return;
-            renderEditForm(CURRENT_STUDENT_ID);
+            if (CURRENT_VIEW_MODE === "parent") renderParentEditForm(CURRENT_STUDENT_ID);
+            else renderEditForm(CURRENT_STUDENT_ID);
         });
+
+        function renderParentEditForm(id) {
+            const s = ALL_STUDENTS.find(x => String(x.id) === String(id));
+            if (!s) return;
+            CURRENT_STUDENT_ID = id;
+            CURRENT_VIEW_MODE = "parent";
+            updateModalHeader();
+            const modalBody = document.getElementById("modalBody");
+
+            // All 6 parent fields are always editable, filled or not -- no +Add Field needed.
+            const filledFields = Object.entries(PARENT_CORE_FIELDS);
+
+            const inputRow = (key, label, value) => `
+                <div class="flex flex-col gap-1" data-field-row="${key}">
+                    <label class="text-xs text-gray-400">${label}</label>
+                    <input type="text" data-field="${key}" value="${value ?? ""}"
+                        class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                </div>`;
+
+            let html = `<div id="editFieldsWrap" class="space-y-3">`;
+            html += filledFields.map(([key, label]) => inputRow(key, label, s[key])).join("");
+            html += `</div>`;
+
+            html += `
+                <div id="editMsg" class="hidden text-sm px-3 py-2 rounded mt-4"></div>
+                <div class="flex gap-2 mt-4">
+                    <button id="saveEditBtn" class="flex-1 bg-primary text-white text-sm font-medium py-2 !rounded-button hover:bg-primary/90">
+                        Save
+                    </button>
+                    <button id="cancelEditBtn" class="flex-1 border border-gray-300 text-gray-600 text-sm font-medium py-2 !rounded-button hover:bg-gray-50">
+                        Cancel
+                    </button>
+                </div>`;
+
+            modalBody.innerHTML = html;
+
+            document.getElementById("cancelEditBtn").addEventListener("click", () => renderParentDetail(id));
+            document.getElementById("saveEditBtn").addEventListener("click", () => saveEdit(id));
+        }
 
         function renderEditForm(id) {
             const s = ALL_STUDENTS.find(x => String(x.id) === String(id));
@@ -436,11 +537,11 @@
             const modalBody = document.getElementById("modalBody");
 
             // Fields that already have a value -> editable inputs
-            const filledFields = Object.entries(FIELD_LABELS)
+            const filledFields = Object.entries(STUDENT_FIELD_LABELS)
                 .filter(([key]) => s[key] !== undefined && s[key] !== null && s[key] !== "");
 
             // Fields that are empty -> shown in the "+ Add Field" dropdown
-            const emptyFields = Object.entries(FIELD_LABELS)
+            const emptyFields = Object.entries(STUDENT_FIELD_LABELS)
                 .filter(([key]) => s[key] === undefined || s[key] === null || s[key] === "");
 
             const inputRow = (key, label, value) => `
@@ -466,6 +567,13 @@
             }
 
             html += `
+                <div class="border-t border-gray-100 mt-4 pt-3 text-center">
+                    <button type="button" id="goToParentEditBtn" class="text-primary text-sm font-medium hover:underline">
+                        <i class="ri-parent-line"></i> Add / Edit Parent Details
+                    </button>
+                </div>`;
+
+            html += `
                 <div id="editMsg" class="hidden text-sm px-3 py-2 rounded mt-4"></div>
                 <div class="flex gap-2 mt-4">
                     <button id="saveEditBtn" class="flex-1 bg-primary text-white text-sm font-medium py-2 !rounded-button hover:bg-primary/90">
@@ -478,12 +586,14 @@
 
             modalBody.innerHTML = html;
 
+            document.getElementById("goToParentEditBtn").addEventListener("click", () => renderParentEditForm(id));
+
             const addFieldSelect = document.getElementById("addFieldSelect");
             if (addFieldSelect) {
                 addFieldSelect.addEventListener("change", () => {
                     const key = addFieldSelect.value;
                     if (!key) return;
-                    const label = FIELD_LABELS[key];
+                    const label = STUDENT_FIELD_LABELS[key];
                     const wrap = document.getElementById("editFieldsWrap");
                     const div = document.createElement("div");
                     div.innerHTML = inputRow(key, label, "");
@@ -518,7 +628,7 @@
             });
 
             if (Object.keys(updates).length === 0) {
-                openDetail(id);
+                if (CURRENT_VIEW_MODE === "parent") renderParentDetail(id); else openDetail(id);
                 return;
             }
 
@@ -539,7 +649,7 @@
             Object.assign(s, updates);
 
             render();
-            openDetail(id);
+            if (CURRENT_VIEW_MODE === "parent") renderParentDetail(id); else openDetail(id);
         }
 
         // ---- Amendment History ----
@@ -570,7 +680,7 @@
                         <span class="font-semibold text-gray-800 text-sm">${row.student_name ?? "-"}</span>
                         <span class="text-[10px] text-gray-400">${new Date(row.changed_at).toLocaleString()}</span>
                     </div>
-                    <p class="text-xs text-gray-500 mb-1">${FIELD_LABELS[row.field_name] ?? row.field_name}</p>
+                    <p class="text-xs text-gray-500 mb-1">${ALL_FIELD_LABELS[row.field_name] ?? row.field_name}</p>
                     <div class="flex items-center gap-2 text-xs">
                         <span class="px-2 py-0.5 rounded bg-red-50 text-red-600">${row.old_value ?? "—"}</span>
                         <i class="ri-arrow-right-line text-gray-300"></i>
