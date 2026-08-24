@@ -48,7 +48,7 @@
         <!-- Stats -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-2 sm:gap-4 mb-4 sm:mb-6">
             <div class="bg-white rounded-lg shadow-sm p-3 sm:p-4">
-                <p class="text-[11px] sm:text-xs text-gray-400">Total Students</p>
+                <p id="statTotalLabel" class="text-[11px] sm:text-xs text-gray-400">Total Students</p>
                 <p id="statTotal" class="text-xl sm:text-2xl font-semibold text-gray-800">–</p>
             </div>
             <div class="bg-white rounded-lg shadow-sm p-3 sm:p-4">
@@ -80,9 +80,6 @@
 
         <!-- Filters -->
         <div class="bg-white rounded-lg shadow-sm p-3 sm:p-4 mb-4 sm:mb-6">
-            <div class="flex flex-wrap items-center gap-2 mb-3" id="classFilters">
-                <button data-class="all" class="class-pill active text-xs sm:text-sm px-3 sm:px-4 py-1.5 rounded-full border border-gray-200">All Classes</button>
-            </div>
 
             <!-- status quick filter, only shown on aadhar/apaar tabs -->
             <div id="statusFilters" class="hidden flex flex-wrap items-center gap-2 mb-3">
@@ -91,15 +88,20 @@
                 <button data-status="pending" class="status-pill text-xs sm:text-sm px-3 py-1.5 rounded-full border border-gray-200">✗ Pending</button>
             </div>
 
-            <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-3">
+            <div class="flex flex-col sm:flex-row gap-2.5 sm:gap-3 mb-3">
                 <div class="relative flex-1">
                     <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
                     <input id="searchInput" type="text" placeholder="Search by name, surname, PEN, roll no, father/mother's name..."
                         class="w-full border border-gray-300 rounded pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
                 </div>
-                <select id="sectionFilter" class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
-                    <option value="all">All Sections</option>
-                </select>
+                
+                <!-- Select Class Filter Dropdown -->
+                <div class="relative sm:w-56">
+                    <i class="ri-graduation-cap-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
+                    <select id="classSelectDropdown" class="w-full border border-gray-300 rounded pl-9 pr-8 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white text-gray-800 font-medium cursor-pointer shadow-sm">
+                        <option value="all">All Classes</option>
+                    </select>
+                </div>
             </div>
 
             <!-- Download current filtered view -->
@@ -140,16 +142,16 @@
     <!-- Detail Modal -->
     <div id="detailModal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[85vh] overflow-y-auto">
-            <div class="flex items-center justify-between px-5 py-4 border-b sticky top-0 bg-white">
-                <h3 id="modalTitle" class="font-semibold text-gray-800">Student Details</h3>
-                <div class="flex items-center gap-3">
-                    <button id="parentToggleBtn" class="text-gray-500 hover:text-primary text-xs sm:text-sm font-medium whitespace-nowrap">
-                        <i class="ri-parent-line"></i> Parent Details
+            <div class="flex items-center justify-between px-4 sm:px-5 py-3.5 border-b sticky top-0 bg-white z-10">
+                <h3 id="modalTitle" class="font-bold text-gray-800 text-base sm:text-lg">Student Details</h3>
+                <div class="flex items-center gap-2 sm:gap-3">
+                    <button id="parentToggleBtn" class="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 text-primary border border-indigo-200 font-semibold text-xs sm:text-sm hover:bg-indigo-100 transition-all shadow-sm">
+                        <i class="ri-parent-line text-sm"></i> <span>Parent Details</span>
                     </button>
-                    <button id="editBtn" class="text-primary hover:text-primary/80 text-sm font-medium">
+                    <button id="editBtn" class="inline-flex items-center gap-1 px-2.5 py-1.5 rounded-lg bg-gray-100 text-gray-700 hover:bg-gray-200 text-xs sm:text-sm font-semibold transition-colors">
                         <i class="ri-edit-line"></i> Edit
                     </button>
-                    <button id="closeModal" class="text-gray-400 hover:text-gray-700"><i class="ri-close-line text-xl"></i></button>
+                    <button id="closeModal" class="w-8 h-8 rounded-full flex items-center justify-center text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"><i class="ri-close-line text-xl"></i></button>
                 </div>
             </div>
             <div id="modalBody" class="p-5 space-y-3 text-sm"></div>
@@ -236,29 +238,50 @@
             render();
         });
 
-        // ---- Class filter pills (1 to 8) ----
-        const classFiltersEl = document.getElementById("classFilters");
-        for (let c = 1; c <= 8; c++) {
-            const btn = document.createElement("button");
-            btn.dataset.class = String(c);
-            btn.className = "class-pill text-xs sm:text-sm px-3 sm:px-4 py-1.5 rounded-full border border-gray-200";
-            btn.textContent = "Class " + c;
-            classFiltersEl.appendChild(btn);
+        // ---- Classes Definition: Nursery, KG-1, KG-2, Class 1 to 8 ----
+        const ALL_CLASSES = [
+            { id: "all", label: "All Classes" },
+            { id: "Nursery", label: "Nursery" },
+            { id: "KG-1", label: "KG-1" },
+            { id: "KG-2", label: "KG-2" },
+            { id: "1", label: "Class 1" },
+            { id: "2", label: "Class 2" },
+            { id: "3", label: "Class 3" },
+            { id: "4", label: "Class 4" },
+            { id: "5", label: "Class 5" },
+            { id: "6", label: "Class 6" },
+            { id: "7", label: "Class 7" },
+            { id: "8", label: "Class 8" }
+        ];
+
+        function matchClass(sClass, selectedClass) {
+            if (selectedClass === "all") return true;
+            if (!sClass) return false;
+            const cleanS = String(sClass).trim().toLowerCase().replace(/[\s\-_]/g, "");
+            const cleanSel = String(selectedClass).trim().toLowerCase().replace(/[\s\-_]/g, "");
+            return cleanS === cleanSel || String(sClass).trim().toLowerCase() === String(selectedClass).trim().toLowerCase();
         }
-        classFiltersEl.addEventListener("click", (e) => {
-            const btn = e.target.closest("button[data-class]");
-            if (!btn) return;
-            currentClass = btn.dataset.class;
+
+        function updateClassDropdown() {
+            const dropdown = document.getElementById("classSelectDropdown");
+            if (!dropdown) return;
+
+            dropdown.innerHTML = ALL_CLASSES.map(cls => {
+                const count = cls.id === "all"
+                    ? ALL_STUDENTS.length
+                    : ALL_STUDENTS.filter(s => matchClass(s.class, cls.id)).length;
+                const isSelected = currentClass === cls.id ? "selected" : "";
+                return `<option value="${cls.id}" ${isSelected}>${cls.label} (${count})</option>`;
+            }).join("");
+        }
+
+        document.getElementById("classSelectDropdown").addEventListener("change", (e) => {
+            currentClass = e.target.value;
             currentPage = 1;
-            [...classFiltersEl.querySelectorAll("button")].forEach(b => b.classList.remove("active"));
-            btn.classList.add("active");
             render();
         });
 
         document.getElementById("searchInput").addEventListener("input", () => { currentPage = 1; render(); });
-        document.getElementById("sectionFilter").addEventListener("change", (e) => {
-            currentSection = e.target.value; currentPage = 1; render();
-        });
 
         // ---- Load data from Supabase ----
         async function loadStudents() {
@@ -283,24 +306,15 @@
             }
 
             ALL_STUDENTS = data || [];
-
-            const sections = [...new Set(ALL_STUDENTS.map(s => s.section).filter(Boolean))].sort();
-            const sectionFilter = document.getElementById("sectionFilter");
-            sections.forEach(sec => {
-                const opt = document.createElement("option");
-                opt.value = sec; opt.textContent = "Section " + sec;
-                sectionFilter.appendChild(opt);
-            });
-
+            updateClassDropdown();
             render();
         }
 
         // Same as getFiltered() but ignores tab/status/search — used for the top stat cards
-        // so they reflect the selected Class/Section, not the status filter.
+        // so they reflect the selected Class, not the status filter.
         function getClassScoped() {
             return ALL_STUDENTS.filter(s => {
-                if (currentClass !== "all" && String(s.class) !== currentClass) return false;
-                if (currentSection !== "all" && s.section !== currentSection) return false;
+                if (!matchClass(s.class, currentClass)) return false;
                 return true;
             });
         }
@@ -308,8 +322,7 @@
         function getFiltered() {
             const query = document.getElementById("searchInput").value.trim().toLowerCase();
             return ALL_STUDENTS.filter(s => {
-                if (currentClass !== "all" && String(s.class) !== currentClass) return false;
-                if (currentSection !== "all" && s.section !== currentSection) return false;
+                if (!matchClass(s.class, currentClass)) return false;
 
                 if (currentTab === "aadhar" && currentStatus !== "all") {
                     const verified = (s.aadhar_status || "").toLowerCase() === "verified";
@@ -345,12 +358,13 @@
         function studentCardHTML(s) {
             const aadharOk = (s.aadhar_status || "").toLowerCase() === "verified";
             const apaarOk = (s.apaar_status || "").toLowerCase() === "generated";
+            const classSec = s.class ? (s.section ? `${s.class}-${s.section}` : s.class) : "-";
             return `
             <div class="bg-white rounded-lg shadow-sm p-4 cursor-pointer hover:shadow-md transition-shadow" data-id="${s.id}">
                 <div class="flex items-start justify-between mb-2">
                     <div>
                         <p class="font-semibold text-gray-800">${s.student_name ?? "-"}</p>
-                        <p class="text-xs text-gray-400">Class ${s.class ?? "-"}${s.section ? " • Sec " + s.section : ""} • Roll ${s.roll_number ?? "-"} • PEN ${s.student_pen ?? "-"}</p>
+                        <p class="text-xs text-gray-400">Class ${classSec} • Roll ${s.roll_number ?? "-"} • PEN ${s.student_pen ?? "-"}</p>
                     </div>
                 </div>
                 <p class="text-xs text-gray-500 mb-2"><i class="ri-user-line mr-1"></i>${s.father_name ?? "Father's name N/A"}</p>
@@ -363,6 +377,11 @@
 
         function render() {
             const scoped = getClassScoped();
+            const statLabelEl = document.getElementById("statTotalLabel");
+            if (statLabelEl) {
+                const classObj = ALL_CLASSES.find(c => c.id === currentClass);
+                statLabelEl.textContent = currentClass === "all" ? "Total Students" : `${classObj?.label || 'Class'} Students`;
+            }
             document.getElementById("statTotal").textContent = scoped.length;
             document.getElementById("statAadharPending").textContent =
                 scoped.filter(s => (s.aadhar_status || "").toLowerCase() !== "verified").length;
@@ -404,11 +423,22 @@
         let CURRENT_VIEW_MODE = "student"; // "student" | "parent"
 
         const STUDENT_FIELD_LABELS = {
-            student_name: "Student Name", class: "Class", section: "Section", roll_number: "Roll Number",
-            student_pen: "Student PEN", date_of_birth: "Date of Birth", gender: "Gender",
-            aadhar_number: "Aadhar Number", aadhar_name: "Name as per Aadhar", aadhar_status: "Aadhar Status",
-            apaar_id: "APAAR ID", apaar_status: "APAAR Status",
-            admission_date: "Admission Date", blood_group: "Blood Group", category: "Category",
+            student_name: "Student Name",
+            father_name: "Father's Name",
+            class: "Class",
+            section: "Section",
+            roll_number: "Roll Number",
+            student_pen: "Student PEN",
+            date_of_birth: "Date of Birth",
+            gender: "Gender",
+            aadhar_number: "Aadhar Number",
+            aadhar_name: "Name as per Aadhar",
+            aadhar_status: "Aadhar Status",
+            apaar_id: "APAAR ID",
+            apaar_status: "APAAR Status",
+            admission_date: "Admission Date",
+            blood_group: "Blood Group",
+            category: "Category",
         };
 
         const PARENT_CORE_FIELDS = {
@@ -429,11 +459,31 @@
             const toggleBtn = document.getElementById("parentToggleBtn");
             if (CURRENT_VIEW_MODE === "parent") {
                 title.textContent = "Parent Details";
-                toggleBtn.innerHTML = '<i class="ri-arrow-left-line"></i> Back to Student Data';
+                toggleBtn.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-gray-100 text-gray-700 border border-gray-300 font-semibold text-xs sm:text-sm hover:bg-gray-200 transition-all shadow-sm";
+                toggleBtn.innerHTML = '<i class="ri-arrow-left-line text-sm"></i> <span>Student Details</span>';
             } else {
                 title.textContent = "Student Details";
-                toggleBtn.innerHTML = '<i class="ri-parent-line"></i> Parent Details';
+                toggleBtn.className = "inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-indigo-50 text-primary border border-indigo-200 font-semibold text-xs sm:text-sm hover:bg-indigo-100 transition-all shadow-sm";
+                toggleBtn.innerHTML = '<i class="ri-parent-line text-sm"></i> <span>Parent Details</span>';
             }
+        }
+
+        function formatDateToDDMMYYYY(val) {
+            if (!val) return "";
+            if (typeof val === "string") {
+                const match = val.trim().match(/^(\d{4})-(\d{2})-(\d{2})/);
+                if (match) {
+                    return `${match[3]}/${match[2]}/${match[1]}`;
+                }
+            }
+            const d = new Date(val);
+            if (!isNaN(d.getTime())) {
+                const day = String(d.getDate()).padStart(2, '0');
+                const month = String(d.getMonth() + 1).padStart(2, '0');
+                const year = d.getFullYear();
+                return `${day}/${month}/${year}`;
+            }
+            return val;
         }
 
         function openDetail(id) {
@@ -443,20 +493,82 @@
             CURRENT_VIEW_MODE = "student";
             updateModalHeader();
             const modalBody = document.getElementById("modalBody");
+            
+            const displayStudent = { ...s };
+            if (s.class) {
+                displayStudent.class = s.section ? `${s.class}-${s.section}` : s.class;
+            }
+            if (displayStudent.category) {
+                displayStudent.category = displayStudent.category.replace(/^\d+[\s\-_]*/i, '');
+            }
+            if (displayStudent.admission_date) {
+                displayStudent.admission_date = formatDateToDDMMYYYY(displayStudent.admission_date);
+            }
+            if (displayStudent.date_of_birth) {
+                displayStudent.date_of_birth = formatDateToDDMMYYYY(displayStudent.date_of_birth);
+            }
+
+            const hasApaarId = displayStudent.apaar_id && String(displayStudent.apaar_id).trim() !== "";
+
+            const COPYABLE_KEYS = new Set([
+                "date_of_birth",
+                "aadhar_number",
+                "apaar_id",
+                "student_pen",
+                "roll_number",
+                "student_name",
+                "father_name",
+                "mother_name",
+                "admission_date"
+            ]);
+
             let rows = Object.entries(STUDENT_FIELD_LABELS)
-                .filter(([key]) => s[key] !== undefined && s[key] !== null && s[key] !== "")
-                .map(([key, label]) => `
-                    <div class="flex justify-between border-b border-gray-50 pb-2 gap-4">
-                        <span class="text-gray-400">${label}</span>
-                        <span class="text-gray-800 font-medium text-right">${s[key]}</span>
-                    </div>`).join("");
+                .filter(([key]) => {
+                    if (key === "section") return false;
+                    // If APAAR ID is present, skip redundant apaar_status line
+                    if (key === "apaar_status" && hasApaarId) return false;
+                    return displayStudent[key] !== undefined && displayStudent[key] !== null && displayStudent[key] !== "";
+                })
+                .map(([key, label]) => {
+                    let valHtml = `<span class="text-gray-800 font-medium text-right text-sm">${displayStudent[key]}</span>`;
+                    
+                    if (key === "aadhar_status") {
+                        const isVerified = (displayStudent.aadhar_status || "").toLowerCase() === "verified";
+                        valHtml = isVerified
+                            ? `<span class="inline-flex items-center gap-1 text-green-700 bg-green-50 font-semibold px-2.5 py-0.5 rounded-full text-xs border border-green-200"><i class="ri-checkbox-circle-fill text-green-600"></i>Verified</span>`
+                            : `<span class="inline-flex items-center gap-1 text-red-600 bg-red-50 font-semibold px-2.5 py-0.5 rounded-full text-xs border border-red-200"><i class="ri-close-circle-fill text-red-500"></i>${displayStudent.aadhar_status || "Pending"}</span>`;
+                    } else if (key === "apaar_status") {
+                        const isGenerated = (displayStudent.apaar_status || "").toLowerCase() === "generated";
+                        valHtml = isGenerated
+                            ? `<span class="inline-flex items-center gap-1 text-green-700 bg-green-50 font-semibold px-2.5 py-0.5 rounded-full text-xs border border-green-200"><i class="ri-checkbox-circle-fill text-green-600"></i>Generated</span>`
+                            : `<span class="inline-flex items-center gap-1 text-red-600 bg-red-50 font-semibold px-2.5 py-0.5 rounded-full text-xs border border-red-200"><i class="ri-close-circle-fill text-red-500"></i>${displayStudent.apaar_status || "Pending"}</span>`;
+                    }
+
+                    const isCopyable = COPYABLE_KEYS.has(key);
+                    const copyAttr = isCopyable ? `data-copy-val="${displayStudent[key]}" class="flex justify-between items-center border-b border-gray-50 pb-2.5 gap-4 cursor-pointer hover:bg-gray-50/80 px-1.5 py-1 rounded transition-colors"` : `class="flex justify-between items-center border-b border-gray-50 pb-2.5 gap-4 px-1.5 py-1"`;
+
+                    return `
+                    <div ${copyAttr}>
+                        <span class="text-gray-400 text-sm">${key === "class" ? "Class & Section" : label}</span>
+                        ${valHtml}
+                    </div>`;
+                }).join("");
+
+            const EXTRA_INFO_LABELS = {
+                cwsn: "CWSN (Special Needs)",
+                pincode: "Pincode",
+                minority_group: "Minority Community",
+                bpl_beneficiary: "BPL Beneficiary",
+                ews_disadvantaged_group: "EWS / Disadvantaged Group"
+            };
+
             if (s.additional_info && typeof s.additional_info === "object") {
                 rows += Object.entries(s.additional_info)
-                    .filter(([, v]) => v !== null && v !== "")
+                    .filter(([key, v]) => key !== "mbu_status" && v !== null && v !== "")
                     .map(([key, val]) => `
-                        <div class="flex justify-between border-b border-gray-50 pb-2 gap-4">
-                            <span class="text-gray-400">${key}</span>
-                            <span class="text-gray-800 font-medium text-right">${val}</span>
+                        <div class="flex justify-between items-center border-b border-gray-50 pb-2.5 gap-4 px-1.5 py-1">
+                            <span class="text-gray-400 text-sm">${EXTRA_INFO_LABELS[key] || key.replace(/_/g, " ").replace(/\b\w/g, l => l.toUpperCase())}</span>
+                            <span class="text-gray-800 font-medium text-right text-sm">${val}</span>
                         </div>`).join("");
             }
             modalBody.innerHTML = rows || `<p class="text-gray-400">No details available.</p>`;
@@ -477,14 +589,60 @@
                 .map(([key, label]) => {
                     const hasValue = s[key] !== undefined && s[key] !== null && s[key] !== "";
                     return `
-                    <div class="flex justify-between border-b border-gray-50 pb-2 gap-4">
-                        <span class="text-gray-400">${label}</span>
-                        <span class="${hasValue ? "text-gray-800 font-medium" : "text-gray-300 italic"} text-right">${hasValue ? s[key] : "Not added yet"}</span>
+                    <div class="flex justify-between border-b border-gray-50 pb-2.5 gap-4 ${hasValue ? 'cursor-pointer hover:bg-gray-50/80' : ''} px-1.5 py-1 rounded transition-colors" ${hasValue ? `data-copy-val="${s[key]}"` : ''}>
+                        <span class="text-gray-400 text-sm">${label}</span>
+                        <span class="${hasValue ? "text-gray-800 font-medium" : "text-gray-300 italic"} text-right text-sm">${hasValue ? s[key] : "Not added yet"}</span>
                     </div>`;
                 }).join("");
 
             modalBody.innerHTML = rows;
             document.getElementById("detailModal").classList.remove("hidden");
+        }
+
+        // Tap/Click to Copy on any detail value (without visible UI clutter)
+        let copyToastTimer;
+        function showCopyToast(text) {
+            let toast = document.getElementById("copyToast");
+            if (!toast) {
+                toast = document.createElement("div");
+                toast.id = "copyToast";
+                toast.className = "fixed bottom-6 left-1/2 -translate-x-1/2 bg-gray-900 text-white text-xs px-4 py-2 rounded-full shadow-2xl z-[99999] pointer-events-none transition-all duration-200 flex items-center gap-1.5 opacity-0 transform translate-y-2";
+                document.body.appendChild(toast);
+            }
+            toast.innerHTML = `<i class="ri-checkbox-circle-fill text-green-400"></i> Copied: <span class="font-medium text-amber-300 truncate max-w-[150px]">${text}</span>`;
+            toast.classList.remove("opacity-0", "translate-y-2");
+            toast.classList.add("opacity-100", "translate-y-0");
+
+            clearTimeout(copyToastTimer);
+            copyToastTimer = setTimeout(() => {
+                toast.classList.remove("opacity-100", "translate-y-0");
+                toast.classList.add("opacity-0", "translate-y-2");
+            }, 1400);
+        }
+
+        document.getElementById("modalBody").addEventListener("click", (e) => {
+            const row = e.target.closest("[data-copy-val]");
+            if (!row) return;
+            const val = row.getAttribute("data-copy-val");
+            if (val && val !== "-" && val !== "Not added yet" && val !== "null") {
+                if (navigator.clipboard && navigator.clipboard.writeText) {
+                    navigator.clipboard.writeText(val).then(() => showCopyToast(val)).catch(() => fallbackCopy(val));
+                } else {
+                    fallbackCopy(val);
+                }
+            }
+        });
+
+        function fallbackCopy(text) {
+            const ta = document.createElement("textarea");
+            ta.value = text;
+            ta.style.position = "fixed";
+            ta.style.opacity = "0";
+            document.body.appendChild(ta);
+            ta.select();
+            document.execCommand("copy");
+            document.body.removeChild(ta);
+            showCopyToast(text);
         }
 
         document.getElementById("parentToggleBtn").addEventListener("click", () => {
@@ -706,8 +864,10 @@
         function reportTitle() {
             let parts = [];
             parts.push(currentTab === "all" ? "Student List" : currentTab === "aadhar" ? "Aadhar Status" : "APAAR Status");
-            if (currentClass !== "all") parts.push("Class " + currentClass);
-            if (currentSection !== "all") parts.push("Sec " + currentSection);
+            if (currentClass !== "all") {
+                const classObj = ALL_CLASSES.find(c => c.id === currentClass);
+                parts.push(classObj ? classObj.label : "Class " + currentClass);
+            }
             if (currentTab !== "all" && currentStatus !== "all") parts.push(currentStatus === "verified" ? "Verified only" : "Pending only");
             return parts.join(" - ");
         }

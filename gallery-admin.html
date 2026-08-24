@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery Admin & Media Portal | IGPS Bhopal</title>
+    <script src="https://cdn.tailwindcss.com/3.4.16"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: { primary: '#4F46E5', secondary: '#F59E0B' },
+                    borderRadius: { 'button': '8px' }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        body { font-family: 'Poppins', sans-serif; }
+        .tab-btn.active {
+            color: #4F46E5;
+            border-bottom-color: #4F46E5;
+            font-weight: 600;
+        }
+    </style>
+</head>
+
+<body class="bg-gray-50 text-gray-800 min-h-screen flex flex-col">
+
+    <!-- Header -->
+    <header class="bg-white border-b border-gray-200 sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+                <img src="https://i.postimg.cc/fWxPrJMh/single-without-bg.png" alt="IGPS Logo" class="h-10">
+                <div>
+                    <span class="font-bold text-gray-800 text-sm md:text-base leading-tight block">IGPS Gallery Management</span>
+                    <span class="text-xs text-primary font-medium">Authorized Media Portal</span>
+                </div>
+            </div>
+
+            <div class="flex items-center gap-3">
+                <a href="gallery.html" target="_blank" class="hidden sm:inline-flex items-center gap-1.5 text-xs text-gray-600 hover:text-primary px-3 py-1.5 rounded-lg border border-gray-200 hover:bg-gray-50 transition-colors">
+                    <i class="ri-eye-line"></i> View Live Gallery
+                </a>
+                <button id="logoutBtn" class="hidden text-xs text-red-600 hover:text-red-700 font-medium px-3 py-1.5 rounded-lg border border-red-200 hover:bg-red-50 transition-colors flex items-center gap-1">
+                    <i class="ri-logout-box-r-line"></i> Logout
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Container -->
+    <main class="flex-1 container mx-auto px-4 py-8 max-w-6xl">
+
+        <!-- Login Card (Shown if not authenticated) -->
+        <div id="loginSection" class="max-w-md mx-auto my-12 bg-white rounded-2xl shadow-xl p-8 border border-gray-100">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-primary/10 rounded-2xl flex items-center justify-center text-primary text-3xl mx-auto mb-3">
+                    <i class="ri-camera-lens-line"></i>
+                </div>
+                <h2 class="text-xl font-bold text-gray-800">Gallery Staff Login</h2>
+                <p class="text-xs text-gray-500 mt-1">Authorized Media Managers &amp; Super Admin only</p>
+            </div>
+
+            <form id="galleryLoginForm" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Email Address</label>
+                    <input type="email" id="loginEmail" required placeholder="admin@igps.edu"
+                        class="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Password</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••"
+                        class="w-full px-4 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white transition-all">
+                </div>
+
+                <div id="loginError" class="hidden text-xs text-red-600 bg-red-50 border border-red-200 rounded-lg p-2.5"></div>
+
+                <button type="submit" id="loginSubmitBtn"
+                    class="w-full bg-primary text-white text-sm font-semibold py-2.5 !rounded-button hover:bg-primary/90 transition-colors shadow-md flex items-center justify-center gap-2">
+                    <span>Access Gallery Portal</span>
+                    <i id="loginSpinner" class="ri-loader-4-line animate-spin hidden"></i>
+                </button>
+            </form>
+
+            <div class="mt-6 text-center border-t border-gray-100 pt-4">
+                <p class="text-xs text-gray-400">Want to view the public gallery?</p>
+                <a href="gallery.html" class="text-xs text-primary font-medium hover:underline mt-1 inline-block">← Back to Public Gallery</a>
+            </div>
+        </div>
+
+        <!-- Role Mismatch Warning (If a student_manager logs in here) -->
+        <div id="roleMismatchAlert" class="hidden max-w-lg mx-auto my-12 bg-amber-50 border border-amber-200 rounded-2xl p-6 text-center">
+            <div class="w-12 h-12 bg-amber-100 text-amber-600 rounded-full flex items-center justify-center text-2xl mx-auto mb-3">
+                <i class="ri-shield-user-line"></i>
+            </div>
+            <h3 class="text-base font-bold text-amber-900">Student Portal Account Detected</h3>
+            <p class="text-xs text-amber-700 mt-2 mb-4">
+                Your account is assigned for <b>Student Data Management</b>. To manage student records, Aadhaar, and APAAR verification, please use the Student Portal.
+            </p>
+            <a href="studentportal/dashboard.html" class="inline-flex items-center gap-1.5 px-4 py-2 bg-secondary text-white text-xs font-semibold rounded-lg hover:bg-secondary/90 transition-colors">
+                <i class="ri-arrow-right-line"></i> Go to Student Data Portal
+            </a>
+        </div>
+
+        <!-- Main Dashboard (Shown after authorized login) -->
+        <div id="dashboardSection" class="hidden">
+
+            <!-- Admin Profile Banner -->
+            <div class="bg-gradient-to-r from-primary to-indigo-700 rounded-2xl p-6 text-white mb-8 shadow-sm flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+                <div>
+                    <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 text-xs font-medium backdrop-blur-sm mb-2" id="roleBadge">
+                        <i class="ri-shield-check-line"></i> Media Manager
+                    </div>
+                    <h1 class="text-xl md:text-2xl font-bold">Media Upload &amp; Folder Management</h1>
+                    <p class="text-xs text-indigo-100 mt-0.5" id="userEmailDisplay">Logged in as: ...</p>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button id="openNewFolderModalBtn" class="px-4 py-2 bg-white text-primary text-xs font-semibold rounded-xl hover:bg-gray-100 transition-colors shadow-sm flex items-center gap-1.5">
+                        <i class="ri-folder-add-line text-base"></i> + Create New Album
+                    </button>
+                </div>
+            </div>
+
+            <!-- Navigation Tabs -->
+            <div class="flex border-b border-gray-200 mb-6 overflow-x-auto">
+                <button class="tab-btn active px-5 py-3 text-xs md:text-sm font-medium border-b-2 border-transparent transition-all flex items-center gap-2 whitespace-nowrap" data-tab="uploadTab">
+                    <i class="ri-upload-cloud-2-line"></i> Upload Media
+                </button>
+                <button class="tab-btn px-5 py-3 text-xs md:text-sm font-medium border-b-2 border-transparent text-gray-500 hover:text-gray-700 transition-all flex items-center gap-2 whitespace-nowrap" data-tab="manageTab">
+                    <i class="ri-folders-line"></i> Manage Albums &amp; Items
+                </button>
+                <!-- Super Admin Only Tab (Strictly for apurohit35419@gmail.com) -->
+                <button id="superAdminTabBtn" class="tab-btn hidden px-5 py-3 text-xs md:text-sm font-medium border-b-2 border-transparent text-amber-600 hover:text-amber-700 transition-all flex items-center gap-2 whitespace-nowrap" data-tab="accountsTab">
+                    <i class="ri-admin-line"></i> Manage Authorized Accounts
+                </button>
+            </div>
+
+            <!-- TAB 1: UPLOAD MEDIA -->
+            <div id="uploadTab" class="tab-content block">
+                <div class="grid md:grid-cols-3 gap-6">
+                    
+                    <!-- Left: Upload Form -->
+                    <div class="md:col-span-2 bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                        <h3 class="text-base font-bold text-gray-800 mb-4 flex items-center gap-2">
+                            <i class="ri-add-circle-line text-primary"></i> Add Photos or Videos
+                        </h3>
+
+                        <form id="mediaUploadForm" class="space-y-4">
+                            <!-- Select Folder -->
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Select Target Album / Folder *</label>
+                                <select id="uploadFolderSelect" required class="w-full px-3.5 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white">
+                                    <!-- Injected dynamically -->
+                                </select>
+                            </div>
+
+                            <!-- Media Type Selector -->
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Media Type *</label>
+                                <div class="grid grid-cols-2 gap-3">
+                                    <label class="flex items-center gap-2 p-3 bg-gray-50 border border-gray-200 rounded-xl cursor-pointer hover:border-primary transition-all">
+                                        <input type="radio" name="mediaTypeRadio" value="photo" checked class="text-primary focus:ring-primary">
+                                        <div>
+                                            <span class="block text-xs font-semibold text-gray-800">📸 Photos / Images</span>
+                                            <span class="block text-[11px] text-gray-400">JPG, PNG, WebP</span>
+                                        </div>
+                                    </label>
+                                    <label class="flex items-center gap-2 p-3 bg-gray-50 border border-gray-200 rounded-xl cursor-pointer hover:border-primary transition-all">
+                                        <input type="radio" name="mediaTypeRadio" value="video" class="text-primary focus:ring-primary">
+                                        <div>
+                                            <span class="block text-xs font-semibold text-gray-800">🎥 Video Link</span>
+                                            <span class="block text-[11px] text-gray-400">YouTube, Shorts (Zero-buffer)</span>
+                                        </div>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Title / Caption -->
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Media Title / Caption *</label>
+                                <input type="text" id="mediaTitleInput" required placeholder="e.g. Annual Day Dance Performance"
+                                    class="w-full px-3.5 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white">
+                            </div>
+
+                            <!-- Date / Tag -->
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Event Date / Tag</label>
+                                <input type="text" id="mediaDateInput" placeholder="e.g. Jan 2025"
+                                    class="w-full px-3.5 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white">
+                            </div>
+
+                            <!-- PHOTO MODE: File Input / URL -->
+                            <div id="photoModeContainer" class="space-y-3">
+                                <label class="block text-xs font-semibold text-gray-700">Choose Image File or Direct Image URL</label>
+                                
+                                <div class="border-2 border-dashed border-gray-200 rounded-xl p-6 text-center hover:border-primary transition-colors bg-gray-50" id="dropZone">
+                                    <i class="ri-image-add-line text-3xl text-gray-400 mb-2 block"></i>
+                                    <p class="text-xs font-semibold text-gray-700">Drag &amp; drop your photo here or <span class="text-primary underline cursor-pointer">browse</span></p>
+                                    <p class="text-[11px] text-gray-400 mt-1">High quality photos automatically optimized for instant loading</p>
+                                    <input type="file" id="photoFileInput" accept="image/*" class="hidden">
+                                </div>
+
+                                <div class="relative flex py-1 items-center">
+                                    <div class="flex-grow border-t border-gray-200"></div>
+                                    <span class="flex-shrink mx-3 text-[11px] text-gray-400 uppercase font-semibold">Or enter Direct Image URL</span>
+                                    <div class="flex-grow border-t border-gray-200"></div>
+                                </div>
+
+                                <input type="url" id="photoUrlInput" placeholder="https://i.postimg.cc/.../photo.jpg or image URL"
+                                    class="w-full px-3.5 py-2 text-xs bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white">
+                            </div>
+
+                            <!-- VIDEO MODE: YouTube Link -->
+                            <div id="videoModeContainer" class="hidden space-y-3">
+                                <label class="block text-xs font-semibold text-gray-700">YouTube Video / Shorts Link *</label>
+                                <input type="url" id="videoUrlInput" placeholder="https://www.youtube.com/watch?v=... or youtu.be/..."
+                                    class="w-full px-3.5 py-2.5 text-sm bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white">
+                                <p class="text-[11px] text-gray-400">
+                                    💡 YouTube videos stream in 1080p/720p with 0-buffer for unlimited viewers for free!
+                                </p>
+                            </div>
+
+                            <!-- Upload Progress Bar -->
+                            <div id="uploadProgressContainer" class="hidden space-y-1">
+                                <div class="flex justify-between text-xs text-gray-600">
+                                    <span id="uploadProgressText">Optimizing &amp; Publishing...</span>
+                                    <span id="uploadProgressPercent">0%</span>
+                                </div>
+                                <div class="w-full bg-gray-200 rounded-full h-2 overflow-hidden">
+                                    <div id="uploadProgressBar" class="bg-primary h-2 rounded-full w-0 transition-all duration-300"></div>
+                                </div>
+                            </div>
+
+                            <button type="submit" id="publishMediaBtn"
+                                class="w-full bg-primary text-white text-sm font-semibold py-3 !rounded-button hover:bg-primary/90 transition-all shadow-md flex items-center justify-center gap-2">
+                                <i class="ri-check-line text-lg"></i>
+                                <span>Publish to Live School Gallery</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Right: Live Upload Preview -->
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col">
+                        <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Live Card Preview</h4>
+                        
+                        <div id="previewCard" class="bg-gray-50 rounded-2xl overflow-hidden border border-gray-200 flex-1 flex flex-col">
+                            <div class="relative aspect-[4/3] bg-gray-200 flex items-center justify-center overflow-hidden">
+                                <img id="previewImage" src="https://images.unsplash.com/photo-1511578314322-379afb476865?auto=format&fit=crop&w=600&q=80"
+                                     alt="Preview" class="w-full h-full object-cover">
+                                <span id="previewFolderBadge" class="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-full text-[10px] font-semibold bg-black/60 text-white">
+                                    Album Name
+                                </span>
+                            </div>
+                            <div class="p-3.5 flex-1 flex flex-col justify-between">
+                                <h5 id="previewTitle" class="text-xs font-semibold text-gray-800 line-clamp-2">
+                                    Your media title will appear here
+                                </h5>
+                                <div class="text-[10px] text-gray-400 mt-2 pt-2 border-t border-gray-200 flex justify-between">
+                                    <span id="previewDate">Jan 2025</span>
+                                    <span class="text-primary font-medium">Verified Media</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-4 p-3 bg-indigo-50/70 rounded-xl border border-indigo-100 text-[11px] text-indigo-900">
+                            <i class="ri-information-line text-primary mr-1"></i>
+                            Changes appear immediately on the public gallery page.
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- TAB 2: MANAGE ALBUMS & ITEMS -->
+            <div id="manageTab" class="tab-content hidden">
+                <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 mb-6">
+                    <div class="flex items-center justify-between mb-4">
+                        <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                            <i class="ri-folder-settings-line text-primary"></i> Created Albums &amp; Media Items
+                        </h3>
+                        <button id="openNewFolderModalBtn2" class="text-xs text-primary font-semibold hover:underline flex items-center gap-1">
+                            <i class="ri-add-line"></i> New Album
+                        </button>
+                    </div>
+
+                    <div id="adminAlbumsList" class="grid sm:grid-cols-2 md:grid-cols-3 gap-4 mb-8">
+                        <!-- Folders list injected dynamically -->
+                    </div>
+
+                    <h4 class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3">Published Media Items</h4>
+                    <div id="adminMediaItemsList" class="grid sm:grid-cols-2 md:grid-cols-4 gap-4">
+                        <!-- Media items injected dynamically -->
+                    </div>
+                </div>
+            </div>
+
+            <!-- TAB 3: SUPER ADMIN - MANAGE AUTHORIZED ACCOUNTS (apurohit35419@gmail.com only) -->
+            <div id="accountsTab" class="tab-content hidden">
+                <div class="grid md:grid-cols-3 gap-6">
+                    
+                    <!-- Left: Create New Account Form -->
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 md:col-span-1">
+                        <div class="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-100 text-amber-800 text-[11px] font-bold mb-3">
+                            <i class="ri-vip-crown-line"></i> Super Admin Only
+                        </div>
+                        <h3 class="text-base font-bold text-gray-800 mb-1">Create Staff Account</h3>
+                        <p class="text-xs text-gray-500 mb-4">Add a new staff login and assign their specific role</p>
+
+                        <form id="createAccountForm" class="space-y-4">
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Staff Email Address *</label>
+                                <input type="email" id="newStaffEmail" required placeholder="staff@igps.edu"
+                                    class="w-full px-3.5 py-2 text-xs bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Password *</label>
+                                <input type="password" id="newStaffPassword" required placeholder="Enter password"
+                                    class="w-full px-3.5 py-2 text-xs bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white">
+                            </div>
+
+                            <div>
+                                <label class="block text-xs font-semibold text-gray-700 mb-1">Assign Role &amp; Permission *</label>
+                                <select id="newStaffRole" required class="w-full px-3.5 py-2 text-xs bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white">
+                                    <option value="gallery_manager">📸 Gallery Media Manager (Uploads photos/videos only)</option>
+                                    <option value="student_manager">🎓 Student Data Manager (Student records &amp; Aadhaar only)</option>
+                                    <option value="super_admin">👑 Super Admin (Full master access)</option>
+                                </select>
+                            </div>
+
+                            <div id="createAccountNotice" class="hidden text-xs rounded-lg p-2.5"></div>
+
+                            <button type="submit" id="createAccountSubmitBtn"
+                                class="w-full bg-amber-600 text-white text-xs font-semibold py-2.5 !rounded-button hover:bg-amber-700 transition-colors shadow-md flex items-center justify-center gap-1.5">
+                                <i class="ri-user-add-line"></i>
+                                <span>Create Authorized Account</span>
+                            </button>
+                        </form>
+                    </div>
+
+                    <!-- Right: Existing Authorized Accounts List -->
+                    <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 md:col-span-2">
+                        <div class="flex items-center justify-between mb-4">
+                            <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                                <i class="ri-team-line text-primary"></i> Authorized Staff Accounts
+                            </h3>
+                            <span class="text-xs text-gray-400" id="accountsCountBadge">3 Accounts</span>
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-xs">
+                                <thead>
+                                    <tr class="bg-gray-50 text-gray-500 border-b border-gray-100">
+                                        <th class="py-2.5 px-3">Email</th>
+                                        <th class="py-2.5 px-3">Role</th>
+                                        <th class="py-2.5 px-3">Allowed Access</th>
+                                        <th class="py-2.5 px-3 text-right">Status</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="authorizedAccountsTbody" class="divide-y divide-gray-100">
+                                    <!-- Dynamic rows -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Create New Folder Modal -->
+    <div id="newFolderModal" class="fixed inset-0 bg-black/60 z-[100] hidden flex items-center justify-center p-4 backdrop-blur-sm">
+        <div class="bg-white rounded-2xl max-w-md w-full p-6 shadow-2xl">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-base font-bold text-gray-800 flex items-center gap-2">
+                    <i class="ri-folder-add-line text-primary"></i> Create New Album / Folder
+                </h3>
+                <button id="closeFolderModalBtn" class="text-gray-400 hover:text-gray-600 text-lg">
+                    <i class="ri-close-line"></i>
+                </button>
+            </div>
+
+            <form id="newFolderForm" class="space-y-3.5">
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Album / Folder Name *</label>
+                    <input type="text" id="newFolderName" required placeholder="e.g. Science Fair 2025"
+                        class="w-full px-3.5 py-2 text-xs bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white">
+                </div>
+
+                <div>
+                    <label class="block text-xs font-semibold text-gray-700 mb-1">Category / Icon</label>
+                    <select id="newFolderIcon" class="w-full px-3.5 py-2 text-xs bg-gray-50 border border-gray-200 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary focus:bg-white">
+                        <option value="ri-sparkling-fill">✨ Cultural &amp; Functions</option>
+                        <option value="ri-trophy-line">🏆 Sports &amp; Athletics</option>
+                        <option value="ri-flask-line">🔬 Science &amp; Academics</option>
+                        <option value="ri-flag-line">🇮🇳 National Days &amp; Celebrations</option>
+                        <option value="ri-building-line">🏫 Campus &amp; Infrastructure</option>
+                        <option value="ri-video-line">🎥 Video Collection</option>
+                    </select>
+                </div>
+
+                <div class="flex justify-end gap-2 pt-2">
+                    <button type="button" id="cancelFolderModalBtn" class="px-4 py-2 text-xs text-gray-600 hover:bg-gray-100 rounded-lg font-medium">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-primary text-white text-xs font-semibold rounded-lg hover:bg-primary/90 transition-colors">Create Album</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="studentportal/supabase-config.js"></script>
+    <script>
+        const SUPER_ADMIN_EMAIL = "apurohit35419@gmail.com";
+        let currentUser = null;
+        let userRole = null;
+
+        // Check authentication state on page load
+        async function checkAuth() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                showLoginSection();
+                return;
+            }
+
+            currentUser = session.user;
+            const email = currentUser.email?.toLowerCase();
+            const metaRole = currentUser.user_metadata?.role;
+
+            // Check if Super Admin
+            if (email === SUPER_ADMIN_EMAIL.toLowerCase() || metaRole === 'super_admin') {
+                userRole = 'super_admin';
+                showDashboard(true);
+            } else if (metaRole === 'gallery_manager') {
+                userRole = 'gallery_manager';
+                showDashboard(false);
+            } else if (metaRole === 'student_manager') {
+                userRole = 'student_manager';
+                showRoleMismatch();
+            } else {
+                // Default allowed for gallery manager if authorized
+                userRole = 'gallery_manager';
+                showDashboard(false);
+            }
+        }
+
+        function showLoginSection() {
+            document.getElementById("loginSection").classList.remove("hidden");
+            document.getElementById("dashboardSection").classList.add("hidden");
+            document.getElementById("roleMismatchAlert").classList.add("hidden");
+            document.getElementById("logoutBtn").classList.add("hidden");
+        }
+
+        function showRoleMismatch() {
+            document.getElementById("loginSection").classList.add("hidden");
+            document.getElementById("dashboardSection").classList.add("hidden");
+            document.getElementById("roleMismatchAlert").classList.remove("hidden");
+            document.getElementById("logoutBtn").classList.remove("hidden");
+        }
+
+        function showDashboard(isSuperAdmin) {
+            document.getElementById("loginSection").classList.add("hidden");
+            document.getElementById("roleMismatchAlert").classList.add("hidden");
+            document.getElementById("dashboardSection").classList.remove("hidden");
+            document.getElementById("logoutBtn").classList.remove("hidden");
+
+            document.getElementById("userEmailDisplay").textContent = `Logged in as: ${currentUser.email}`;
+            
+            const badge = document.getElementById("roleBadge");
+            if (isSuperAdmin) {
+                badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-amber-400/30 text-amber-200 text-xs font-bold backdrop-blur-sm mb-2";
+                badge.innerHTML = `<i class="ri-vip-crown-fill"></i> Super Admin Master`;
+                document.getElementById("superAdminTabBtn").classList.remove("hidden");
+                loadAuthorizedAccountsList();
+            } else {
+                badge.className = "inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 text-white text-xs font-medium backdrop-blur-sm mb-2";
+                badge.innerHTML = `<i class="ri-camera-lens-line"></i> Gallery Media Manager`;
+                document.getElementById("superAdminTabBtn").classList.add("hidden");
+            }
+
+            populateFolderDropdowns();
+            renderAdminManageView();
+        }
+
+        // Login Submission
+        document.getElementById("galleryLoginForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("loginEmail").value.trim();
+            const password = document.getElementById("loginPassword").value;
+            const errorDiv = document.getElementById("loginError");
+            const spinner = document.getElementById("loginSpinner");
+            const btn = document.getElementById("loginSubmitBtn");
+
+            errorDiv.classList.add("hidden");
+            spinner.classList.remove("hidden");
+            btn.disabled = true;
+
+            const { data, error } = await supabaseClient.auth.signInWithPassword({ email, password });
+
+            spinner.classList.add("hidden");
+            btn.disabled = false;
+
+            if (error) {
+                errorDiv.textContent = "Login Failed: " + error.message;
+                errorDiv.classList.remove("hidden");
+                return;
+            }
+
+            checkAuth();
+        });
+
+        // Logout
+        document.getElementById("logoutBtn").addEventListener("click", async () => {
+            await supabaseClient.auth.signOut();
+            window.location.reload();
+        });
+
+        // Tab Navigation
+        document.querySelectorAll(".tab-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+                const targetTab = btn.getAttribute("data-tab");
+                document.querySelectorAll(".tab-btn").forEach(b => b.classList.remove("active"));
+                document.querySelectorAll(".tab-content").forEach(c => c.classList.add("hidden"));
+                
+                btn.classList.add("active");
+                document.getElementById(targetTab)?.classList.remove("hidden");
+            });
+        });
+
+        // Load & Populate Folders
+        function getFolders() {
+            const defaultFolders = [
+                { id: "annual-day", name: "Annual Function 2025", icon: "ri-sparkling-fill" },
+                { id: "sports-meet", name: "Sports Day & Athletics", icon: "ri-trophy-line" },
+                { id: "science-expo", name: "Science & Art Exhibition", icon: "ri-flask-line" },
+                { id: "national-days", name: "Independence & Republic Day", icon: "ri-flag-line" },
+                { id: "campus-life", name: "Campus & Classrooms", icon: "ri-building-line" },
+                { id: "video-moments", name: "Video Highlights", icon: "ri-video-line" }
+            ];
+            const stored = JSON.parse(localStorage.getItem("igps_gallery_folders") || "[]");
+            return [...defaultFolders, ...stored.filter(s => !defaultFolders.some(d => d.id === s.id))];
+        }
+
+        function populateFolderDropdowns() {
+            const folders = getFolders();
+            const select = document.getElementById("uploadFolderSelect");
+            select.innerHTML = folders.map(f => `<option value="${f.id}" data-name="${f.name}">${f.name}</option>`).join("");
+            updateLivePreview();
+        }
+
+        // Switch Media Type Radio
+        document.querySelectorAll("input[name='mediaTypeRadio']").forEach(radio => {
+            radio.addEventListener("change", (e) => {
+                const isPhoto = e.target.value === "photo";
+                document.getElementById("photoModeContainer").classList.toggle("hidden", !isPhoto);
+                document.getElementById("videoModeContainer").classList.toggle("hidden", isPhoto);
+                updateLivePreview();
+            });
+        });
+
+        // Live Card Preview updates
+        function updateLivePreview() {
+            const folderSelect = document.getElementById("uploadFolderSelect");
+            const selectedFolderText = folderSelect.options[folderSelect.selectedIndex]?.text || "Album Name";
+            const titleText = document.getElementById("mediaTitleInput").value.trim() || "Your media title will appear here";
+            const dateText = document.getElementById("mediaDateInput").value.trim() || "Recent";
+            const isPhoto = document.querySelector("input[name='mediaTypeRadio']:checked").value === "photo";
+
+            document.getElementById("previewFolderBadge").textContent = selectedFolderText;
+            document.getElementById("previewTitle").textContent = titleText;
+            document.getElementById("previewDate").textContent = dateText;
+
+            if (isPhoto) {
+                const photoUrl = document.getElementById("photoUrlInput").value.trim();
+                if (photoUrl) {
+                    document.getElementById("previewImage").src = photoUrl;
+                }
+            } else {
+                const videoUrl = document.getElementById("videoUrlInput").value.trim();
+                if (videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be")) {
+                    let ytId = videoUrl.includes("watch?v=") ? videoUrl.split("v=")[1]?.split("&")[0] : videoUrl.split("youtu.be/")[1]?.split("?")[0];
+                    if (ytId) {
+                        document.getElementById("previewImage").src = `https://img.youtube.com/vi/${ytId}/hqdefault.jpg`;
+                    }
+                }
+            }
+        }
+
+        document.getElementById("mediaTitleInput").addEventListener("input", updateLivePreview);
+        document.getElementById("mediaDateInput").addEventListener("input", updateLivePreview);
+        document.getElementById("photoUrlInput").addEventListener("input", updateLivePreview);
+        document.getElementById("videoUrlInput").addEventListener("input", updateLivePreview);
+        document.getElementById("uploadFolderSelect").addEventListener("change", updateLivePreview);
+
+        // Photo File Drag & Drop + Browse handler
+        const dropZone = document.getElementById("dropZone");
+        const photoFileInput = document.getElementById("photoFileInput");
+
+        dropZone.addEventListener("click", () => photoFileInput.click());
+        dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.classList.add("border-primary"); });
+        dropZone.addEventListener("dragleave", () => dropZone.classList.remove("border-primary"));
+        dropZone.addEventListener("drop", (e) => {
+            e.preventDefault();
+            dropZone.classList.remove("border-primary");
+            if (e.dataTransfer.files.length > 0) {
+                handleSelectedFile(e.dataTransfer.files[0]);
+            }
+        });
+
+        photoFileInput.addEventListener("change", (e) => {
+            if (e.target.files.length > 0) {
+                handleSelectedFile(e.target.files[0]);
+            }
+        });
+
+        function handleSelectedFile(file) {
+            const reader = new FileReader();
+            reader.onload = (event) => {
+                document.getElementById("previewImage").src = event.target.result;
+                document.getElementById("photoUrlInput").value = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+
+        // Publish Media Form Submit
+        document.getElementById("mediaUploadForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const folderSelect = document.getElementById("uploadFolderSelect");
+            const folderId = folderSelect.value;
+            const folderName = folderSelect.options[folderSelect.selectedIndex].text;
+            const mediaType = document.querySelector("input[name='mediaTypeRadio']:checked").value;
+            const title = document.getElementById("mediaTitleInput").value.trim();
+            const date = document.getElementById("mediaDateInput").value.trim() || "Recent";
+
+            let mediaUrl = "";
+            let youtubeId = "";
+            let thumbnail = "";
+
+            if (mediaType === "photo") {
+                mediaUrl = document.getElementById("photoUrlInput").value.trim() || document.getElementById("previewImage").src;
+            } else {
+                mediaUrl = document.getElementById("videoUrlInput").value.trim();
+                if (mediaUrl.includes("watch?v=")) {
+                    youtubeId = mediaUrl.split("v=")[1]?.split("&")[0];
+                } else if (mediaUrl.includes("youtu.be/")) {
+                    youtubeId = mediaUrl.split("youtu.be/")[1]?.split("?")[0];
+                }
+                thumbnail = `https://img.youtube.com/vi/${youtubeId || 'dQw4w9WgXcQ'}/hqdefault.jpg`;
+            }
+
+            // Show Progress animation
+            const progressContainer = document.getElementById("uploadProgressContainer");
+            const progressBar = document.getElementById("uploadProgressBar");
+            const progressPercent = document.getElementById("uploadProgressPercent");
+            const publishBtn = document.getElementById("publishMediaBtn");
+
+            progressContainer.classList.remove("hidden");
+            publishBtn.disabled = true;
+
+            for (let p = 10; p <= 100; p += 30) {
+                progressBar.style.width = p + "%";
+                progressPercent.textContent = p + "%";
+                await new Promise(r => setTimeout(r, 150));
+            }
+
+            const newMediaItem = {
+                id: Date.now(),
+                title,
+                folderId,
+                folderName,
+                type: mediaType,
+                url: mediaUrl,
+                youtubeId,
+                thumbnail,
+                date
+            };
+
+            // Save to LocalStorage media registry
+            const existingMedia = JSON.parse(localStorage.getItem("igps_gallery_media") || "[]");
+            existingMedia.unshift(newMediaItem);
+            localStorage.setItem("igps_gallery_media", JSON.stringify(existingMedia));
+
+            alert("🎉 Media successfully published to Live School Gallery!");
+            progressContainer.classList.add("hidden");
+            progressBar.style.width = "0%";
+            publishBtn.disabled = false;
+
+            document.getElementById("mediaTitleInput").value = "";
+            document.getElementById("photoUrlInput").value = "";
+            document.getElementById("videoUrlInput").value = "";
+            renderAdminManageView();
+        });
+
+        // Folder Modal Handlers
+        const folderModal = document.getElementById("newFolderModal");
+        document.getElementById("openNewFolderModalBtn").addEventListener("click", () => folderModal.classList.remove("hidden"));
+        document.getElementById("openNewFolderModalBtn2")?.addEventListener("click", () => folderModal.classList.remove("hidden"));
+        document.getElementById("closeFolderModalBtn").addEventListener("click", () => folderModal.classList.add("hidden"));
+        document.getElementById("cancelFolderModalBtn").addEventListener("click", () => folderModal.classList.add("hidden"));
+
+        document.getElementById("newFolderForm").addEventListener("submit", (e) => {
+            e.preventDefault();
+            const name = document.getElementById("newFolderName").value.trim();
+            const icon = document.getElementById("newFolderIcon").value;
+            const id = name.toLowerCase().replace(/[^a-z0-9]/g, "-") + "-" + Date.now().toString().slice(-4);
+
+            const newFolder = { id, name, icon };
+            const existingFolders = JSON.parse(localStorage.getItem("igps_gallery_folders") || "[]");
+            existingFolders.push(newFolder);
+            localStorage.setItem("igps_gallery_folders", JSON.stringify(existingFolders));
+
+            folderModal.classList.add("hidden");
+            document.getElementById("newFolderName").value = "";
+            populateFolderDropdowns();
+            renderAdminManageView();
+            alert(`📁 Album "${name}" created successfully!`);
+        });
+
+        // Render Manage View
+        function renderAdminManageView() {
+            const folders = getFolders();
+            const albumsContainer = document.getElementById("adminAlbumsList");
+            const mediaContainer = document.getElementById("adminMediaItemsList");
+
+            const storedMedia = JSON.parse(localStorage.getItem("igps_gallery_media") || "[]");
+
+            albumsContainer.innerHTML = folders.map(f => `
+                <div class="p-3.5 bg-gray-50 border border-gray-200 rounded-xl flex items-center justify-between">
+                    <div class="flex items-center gap-2.5">
+                        <i class="${f.icon || 'ri-folder-line'} text-primary text-lg"></i>
+                        <span class="text-xs font-semibold text-gray-800">${f.name}</span>
+                    </div>
+                </div>
+            `).join("");
+
+            if (storedMedia.length === 0) {
+                mediaContainer.innerHTML = `<div class="col-span-full text-center py-6 text-xs text-gray-400">No custom uploads yet. Use the Upload tab to add items.</div>`;
+                return;
+            }
+
+            mediaContainer.innerHTML = storedMedia.map(m => `
+                <div class="bg-gray-50 rounded-xl border border-gray-200 overflow-hidden text-xs flex flex-col justify-between">
+                    <div class="aspect-video bg-gray-200 relative overflow-hidden">
+                        <img src="${m.thumbnail || m.url}" alt="${m.title}" class="w-full h-full object-cover">
+                        <span class="absolute top-1.5 left-1.5 px-2 py-0.5 rounded text-[10px] bg-black/70 text-white">${m.folderName}</span>
+                    </div>
+                    <div class="p-2.5 flex-1 flex flex-col justify-between">
+                        <p class="font-medium text-gray-800 line-clamp-1">${m.title}</p>
+                        <div class="flex justify-between items-center mt-2 pt-2 border-t border-gray-200">
+                            <span class="text-[10px] text-gray-400">${m.type.toUpperCase()}</span>
+                            <button onclick="deleteMediaItem(${m.id})" class="text-red-500 hover:text-red-700 text-xs font-semibold">
+                                <i class="ri-delete-bin-line"></i> Delete
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        window.deleteMediaItem = function(id) {
+            if (!confirm("Are you sure you want to delete this media item?")) return;
+            let existingMedia = JSON.parse(localStorage.getItem("igps_gallery_media") || "[]");
+            existingMedia = existingMedia.filter(m => m.id !== id);
+            localStorage.setItem("igps_gallery_media", JSON.stringify(existingMedia));
+            renderAdminManageView();
+        };
+
+        // SUPER ADMIN: Create New Authorized Account Handler
+        document.getElementById("createAccountForm").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const email = document.getElementById("newStaffEmail").value.trim();
+            const password = document.getElementById("newStaffPassword").value;
+            const role = document.getElementById("newStaffRole").value;
+            const noticeDiv = document.getElementById("createAccountNotice");
+            const btn = document.getElementById("createAccountSubmitBtn");
+
+            btn.disabled = true;
+            noticeDiv.className = "text-xs rounded-lg p-2.5 bg-blue-50 text-blue-700";
+            noticeDiv.textContent = "Creating account in Supabase Auth...";
+            noticeDiv.classList.remove("hidden");
+
+            const { data, error } = await supabaseClient.auth.signUp({
+                email,
+                password,
+                options: {
+                    data: { role }
+                }
+            });
+
+            btn.disabled = false;
+
+            if (error) {
+                noticeDiv.className = "text-xs rounded-lg p-2.5 bg-red-50 text-red-700";
+                noticeDiv.textContent = "Error creating account: " + error.message;
+                return;
+            }
+
+            // Save to staff accounts registry
+            const accounts = JSON.parse(localStorage.getItem("igps_authorized_accounts") || "[]");
+            accounts.push({ email, role, createdAt: new Date().toLocaleDateString() });
+            localStorage.setItem("igps_authorized_accounts", JSON.stringify(accounts));
+
+            noticeDiv.className = "text-xs rounded-lg p-2.5 bg-green-50 text-green-700";
+            noticeDiv.textContent = `✅ Account for "${email}" created with role "${role}"!`;
+            
+            document.getElementById("newStaffEmail").value = "";
+            document.getElementById("newStaffPassword").value = "";
+            loadAuthorizedAccountsList();
+        });
+
+        function loadAuthorizedAccountsList() {
+            const tbody = document.getElementById("authorizedAccountsTbody");
+            const defaultAccounts = [
+                { email: "apurohit35419@gmail.com", role: "super_admin", access: "Full Master Access (All Portals)" },
+                { email: "staff.media@igps.edu", role: "gallery_manager", access: "Gallery Media Upload Portal Only" },
+                { email: "teacher.data@igps.edu", role: "student_manager", access: "Student Data Portal Only" }
+            ];
+
+            const customAccounts = JSON.parse(localStorage.getItem("igps_authorized_accounts") || "[]");
+            const allAccounts = [...defaultAccounts, ...customAccounts.map(c => ({
+                email: c.email,
+                role: c.role,
+                access: c.role === 'super_admin' ? 'Full Master Access' : (c.role === 'gallery_manager' ? 'Gallery Upload Portal Only' : 'Student Data Portal Only')
+            }))];
+
+            document.getElementById("accountsCountBadge").textContent = `${allAccounts.length} Accounts`;
+
+            tbody.innerHTML = allAccounts.map(acc => `
+                <tr class="hover:bg-gray-50">
+                    <td class="py-2.5 px-3 font-medium text-gray-800">${acc.email}</td>
+                    <td class="py-2.5 px-3">
+                        <span class="px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                            acc.role === 'super_admin' ? 'bg-amber-100 text-amber-800' :
+                            (acc.role === 'gallery_manager' ? 'bg-indigo-100 text-indigo-800' : 'bg-emerald-100 text-emerald-800')
+                        }">
+                            ${acc.role.toUpperCase()}
+                        </span>
+                    </td>
+                    <td class="py-2.5 px-3 text-gray-500">${acc.access}</td>
+                    <td class="py-2.5 px-3 text-right">
+                        <span class="inline-block w-2 h-2 rounded-full bg-green-500"></span> Active
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        // Initialize auth check
+        checkAuth();
+    </script>
+</body>
+
+</html>

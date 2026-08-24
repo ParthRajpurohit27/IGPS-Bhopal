@@ -36,7 +36,7 @@ body {
 .reveal {
     opacity: 0;
     transform: translateY(20px);
-    transition: all 0.8s ease;
+    transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .reveal.active {
@@ -60,59 +60,48 @@ body {
     }
 }
 
+/* Modern & Clean Preloader */
 .preloader {
     position: fixed;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: linear-gradient(45deg, #4F46E5, #F59E0B, #33FF57, #FF5733);
-    background-size: 300% 300%;
-    animation: gradientAnimation 6s ease infinite;
+    background: #ffffff;
     display: flex;
     justify-content: center;
     align-items: center;
     z-index: 9999;
-    transition: opacity 0.5s ease;
-}
-
-@keyframes gradientAnimation {
-    0% {
-        background-position: 0% 50%;
-    }
-    50% {
-        background-position: 100% 50%;
-    }
-    100% {
-        background-position: 0% 50%;
-    }
+    transition: opacity 0.4s ease;
 }
 
 .loader-container {
     position: relative;
-    width: 72px;
-    height: 72px;
+    width: 80px;
+    height: 80px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
 }
 
 .loader {
     position: absolute;
     top: 0;
     left: 0;    
-    width: 72px;
-    height: 72px;
-    border: 5px solid #4F46E5;
-    border-bottom-color: transparent;
+    width: 80px;
+    height: 80px;
+    border: 4px solid #E0E7FF;
+    border-top-color: #4F46E5;
     border-radius: 50%;
-    animation: rotation 1s linear infinite;
+    animation: rotation 0.9s linear infinite;
 }
 
 .logo {
-    position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
-    width: 64px;
-    height: 64px;
+    width: 52px;
+    height: 52px;
+    object-fit: contain;
+    z-index: 2;
 }
 
 @keyframes rotation {
@@ -126,15 +115,13 @@ body {
 
 .loader-slidebar {
     position: absolute;
-    bottom: -20px;
-    left: 10%;
-    width: 80%;
-    height: 12px;
-    background: #e0e0e0;
-    border-radius: 10px;
+    bottom: -22px;
+    left: -10px;
+    width: 100px;
+    height: 6px;
+    background: #F1F5F9;
+    border-radius: 9999px;
     overflow: hidden;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
-    animation: glowEffect 2s infinite alternate;
 }
 
 .loader-slidebar::before {
@@ -142,8 +129,8 @@ body {
     display: block;
     height: 100%;
     width: 0%;
-    background: linear-gradient(90deg, #4F46E5, #F59E0B, #33FF57, #FF5733);
-    animation: slidebarProgress 3s ease-in-out infinite;
+    background: linear-gradient(90deg, #4F46E5, #F59E0B);
+    animation: slidebarProgress 1.5s ease-in-out infinite;
 }
 
 @keyframes slidebarProgress {
@@ -158,36 +145,24 @@ body {
     }
 }
 
-@keyframes glowEffect {
-    0% {
-        box-shadow: 0 0 10px rgba(79, 70, 229, 0.5), 0 0 20px rgba(245, 158, 11, 0.5);
-    }
-    100% {
-        box-shadow: 0 0 20px rgba(51, 255, 87, 0.7), 0 0 30px rgba(255, 87, 51, 0.7);
-    }
-}
-
 .floating-text-container {
     position: relative;
     overflow: hidden;
     background-color: #4F46E5;
     width: 100%;
-    height: 25px;
+    height: 28px;
+    display: flex;
+    align-items: center;
 }
 
 .floating-text {
     position: absolute;
     white-space: nowrap;
     color: white;
-    font-size: 18px;
-    font-weight: bold;
-    animation: moveText 14s linear infinite;
-    font-family: 'Times New Roman', Times, serif;
-    margin: auto;
-}
-
-.floating-text-container:hover {
-    background-color: red;
+    font-size: 13px;
+    font-weight: 500;
+    animation: moveText 20s linear infinite;
+    font-family: 'Poppins', sans-serif;
 }
 
 @keyframes moveText {
@@ -199,25 +174,13 @@ body {
     }
 }
 
-@keyframes glowing {
-    0% {
-        box-shadow: 0 0 3px #FF5733, 0 0 6px #FF5733, 0 0 12px #FF5733, 0 0 20px #33FF57, 0 0 30px #33FF57, 0 0 40px #33FF57;
-    }
-    25% {
-        box-shadow: 0 0 3px #33FF57, 0 0 6px #33FF57, 0 0 12px #33FF57, 0 0 20px #3357FF, 0 0 30px #3357FF, 0 0 40px #3357FF;
-    }
-    50% {
-        box-shadow: 0 0 3px #3357FF, 0 0 6px #3357FF, 0 0 12px #3357FF, 0 0 20px #FF33A1, 0 0 30px #FF33A1, 0 0 40px #FF33A1;
-    }
-    75% {
-        box-shadow: 0 0 3px #FF33A1, 0 0 6px #FF33A1, 0 0 12px #FF33A1, 0 0 20px #FF5733, 0 0 30px #FF5733, 0 0 40px #FF5733;
-    }
-    100% {
-        box-shadow: 0 0 3px #FF5733, 0 0 6px #FF5733, 0 0 12px #FF5733, 0 0 20px #33FF57, 0 0 30px #33FF57, 0 0 40px #33FF57;
-    }
+/* Subtle Modern Button Hover */
+button[class*="bg-primary"],
+a[class*="bg-primary"] {
+    transition: all 0.25s ease;
 }
-
-button[class*="bg-"]:not(#sendMessageBtn),
-a[class*="bg-"]:not(.follow-us-btn) {
-    animation: glowing 2s infinite;
+button[class*="bg-primary"]:hover,
+a[class*="bg-primary"]:hover {
+    box-shadow: 0 8px 20px rgba(79, 70, 229, 0.3);
+    transform: translateY(-1px);
 }
