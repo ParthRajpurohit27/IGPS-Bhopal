@@ -94,7 +94,7 @@
             <div class="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-3">
                 <div class="relative flex-1">
                     <i class="ri-search-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400"></i>
-                    <input id="searchInput" type="text" placeholder="Search name, roll no, father's name, Aadhar no..."
+                    <input id="searchInput" type="text" placeholder="Search by name, surname, PEN, roll no, father/mother's name..."
                         class="w-full border border-gray-300 rounded pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
                 </div>
                 <select id="sectionFilter" class="border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
@@ -312,44 +312,51 @@
                 if (currentSection !== "all" && s.section !== currentSection) return false;
 
                 if (currentTab === "aadhar" && currentStatus !== "all") {
-                    const has = !!s.aadhar_number;
-                    if (currentStatus === "verified" && !has) return false;
-                    if (currentStatus === "pending" && has) return false;
+                    const verified = (s.aadhar_status || "").toLowerCase() === "verified";
+                    if (currentStatus === "verified" && !verified) return false;
+                    if (currentStatus === "pending" && verified) return false;
                 }
                 if (currentTab === "apaar" && currentStatus !== "all") {
-                    const has = !!s.apaar_id;
-                    if (currentStatus === "verified" && !has) return false;
-                    if (currentStatus === "pending" && has) return false;
+                    const generated = (s.apaar_status || "").toLowerCase() === "generated";
+                    if (currentStatus === "verified" && !generated) return false;
+                    if (currentStatus === "pending" && generated) return false;
                 }
 
                 if (query) {
-                    const haystack = [s.student_name, s.roll_number, s.father_name, s.mother_name, s.aadhar_number, s.apaar_id]
-                        .filter(Boolean).join(" ").toLowerCase();
-                    if (!haystack.includes(query)) return false;
+                    const haystack = [
+                        s.student_name, s.roll_number, s.father_name, s.mother_name,
+                        s.aadhar_number, s.apaar_id, s.student_pen
+                    ].filter(Boolean).join(" ").toLowerCase();
+                    // every typed word must appear somewhere in the haystack —
+                    // so "maran lokesh" or just "maran" (surname only) both match "LOKESH MARAN"
+                    const terms = query.split(/\s+/).filter(Boolean);
+                    if (!terms.every(t => haystack.includes(t))) return false;
                 }
                 return true;
             });
         }
 
-        function statusBadge(has, label) {
-            return has
+        function statusBadge(ok, label, statusText) {
+            return ok
                 ? `<span class="inline-flex items-center gap-1 text-green-700 bg-green-50 px-2 py-0.5 rounded-full text-xs"><i class="ri-check-line"></i>${label}</span>`
-                : `<span class="inline-flex items-center gap-1 text-red-600 bg-red-50 px-2 py-0.5 rounded-full text-xs"><i class="ri-close-line"></i>${label}</span>`;
+                : `<span class="inline-flex items-center gap-1 text-red-600 bg-red-50 px-2 py-0.5 rounded-full text-xs"><i class="ri-close-line"></i>${label}${statusText ? ": " + statusText : ""}</span>`;
         }
 
         function studentCardHTML(s) {
+            const aadharOk = (s.aadhar_status || "").toLowerCase() === "verified";
+            const apaarOk = (s.apaar_status || "").toLowerCase() === "generated";
             return `
             <div class="bg-white rounded-lg shadow-sm p-4 cursor-pointer hover:shadow-md transition-shadow" data-id="${s.id}">
                 <div class="flex items-start justify-between mb-2">
                     <div>
                         <p class="font-semibold text-gray-800">${s.student_name ?? "-"}</p>
-                        <p class="text-xs text-gray-400">Class ${s.class ?? "-"}${s.section ? " • Sec " + s.section : ""} • Roll ${s.roll_number ?? "-"}</p>
+                        <p class="text-xs text-gray-400">Class ${s.class ?? "-"}${s.section ? " • Sec " + s.section : ""} • Roll ${s.roll_number ?? "-"} • PEN ${s.student_pen ?? "-"}</p>
                     </div>
                 </div>
                 <p class="text-xs text-gray-500 mb-2"><i class="ri-user-line mr-1"></i>${s.father_name ?? "Father's name N/A"}</p>
                 <div class="flex flex-wrap gap-2">
-                    ${statusBadge(!!s.aadhar_number, "Aadhar")}
-                    ${statusBadge(!!s.apaar_id, "APAAR")}
+                    ${statusBadge(aadharOk, "Aadhar", s.aadhar_status)}
+                    ${statusBadge(apaarOk, "APAAR", s.apaar_status)}
                 </div>
             </div>`;
         }
@@ -357,8 +364,10 @@
         function render() {
             const scoped = getClassScoped();
             document.getElementById("statTotal").textContent = scoped.length;
-            document.getElementById("statAadharPending").textContent = scoped.filter(s => !s.aadhar_number).length;
-            document.getElementById("statApaarPending").textContent = scoped.filter(s => !s.apaar_id).length;
+            document.getElementById("statAadharPending").textContent =
+                scoped.filter(s => (s.aadhar_status || "").toLowerCase() !== "verified").length;
+            document.getElementById("statApaarPending").textContent =
+                scoped.filter(s => (s.apaar_status || "").toLowerCase() !== "generated").length;
 
             const filtered = getFiltered();
             document.getElementById("statShowing").textContent = filtered.length;
@@ -396,8 +405,9 @@
 
         const STUDENT_FIELD_LABELS = {
             student_name: "Student Name", class: "Class", section: "Section", roll_number: "Roll Number",
-            date_of_birth: "Date of Birth", gender: "Gender",
-            aadhar_number: "Aadhar Number", aadhar_name: "Name as per Aadhar", apaar_id: "APAAR ID",
+            student_pen: "Student PEN", date_of_birth: "Date of Birth", gender: "Gender",
+            aadhar_number: "Aadhar Number", aadhar_name: "Name as per Aadhar", aadhar_status: "Aadhar Status",
+            apaar_id: "APAAR ID", apaar_status: "APAAR Status",
             admission_date: "Admission Date", blood_group: "Blood Group", category: "Category",
         };
 
@@ -710,9 +720,10 @@
                     <td style="padding:6px 8px;">${s.student_name ?? "-"}</td>
                     <td style="padding:6px 8px;">${s.class ?? "-"}${s.section ? "-" + s.section : ""}</td>
                     <td style="padding:6px 8px;">${s.roll_number ?? "-"}</td>
+                    <td style="padding:6px 8px;">${s.student_pen ?? "-"}</td>
                     <td style="padding:6px 8px;">${s.father_name ?? "-"}</td>
-                    ${currentTab !== "apaar" ? `<td style="padding:6px 8px; text-align:center;">${s.aadhar_number ? "✓" : "✗"}</td>` : ""}
-                    ${currentTab !== "aadhar" ? `<td style="padding:6px 8px; text-align:center;">${s.apaar_id ? "✓ " + s.apaar_id : "✗"}</td>` : ""}
+                    ${currentTab !== "apaar" ? `<td style="padding:6px 8px; text-align:center;">${(s.aadhar_status || "").toLowerCase() === "verified" ? "✓" : "✗ " + (s.aadhar_status || "N/A")}</td>` : ""}
+                    ${currentTab !== "aadhar" ? `<td style="padding:6px 8px; text-align:center;">${(s.apaar_status || "").toLowerCase() === "generated" ? "✓ " + s.apaar_id : "✗ " + (s.apaar_status || "N/A")}</td>` : ""}
                 </tr>`).join("");
 
             return `
@@ -732,6 +743,7 @@
                             <th style="padding:6px 8px; text-align:left;">Name</th>
                             <th style="padding:6px 8px; text-align:left;">Class</th>
                             <th style="padding:6px 8px; text-align:left;">Roll</th>
+                            <th style="padding:6px 8px; text-align:left;">PEN</th>
                             <th style="padding:6px 8px; text-align:left;">Father's Name</th>
                             ${currentTab !== "apaar" ? `<th style="padding:6px 8px;">Aadhar</th>` : ""}
                             ${currentTab !== "aadhar" ? `<th style="padding:6px 8px;">APAAR</th>` : ""}
