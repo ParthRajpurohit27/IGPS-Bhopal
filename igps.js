@@ -166,20 +166,79 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Contact Form Submission
+    // Contact Form Submission (Direct Delivery to Owner's Mobile & WhatsApp)
     const contactForm = document.getElementById('contactForm');
     const successModal = document.getElementById('successModal');
     const closeModal = document.getElementById('closeModal');
-    if (contactForm && successModal) {
-        contactForm.addEventListener('submit', function (e) {
+    const sendMessageBtn = document.getElementById('sendMessageBtn');
+
+    if (contactForm) {
+        contactForm.addEventListener('submit', async function (e) {
             e.preventDefault();
-            successModal.classList.remove('hidden');
+
+            const name = document.getElementById('name')?.value.trim() || '';
+            const email = document.getElementById('email')?.value.trim() || '';
+            const phone = document.getElementById('phone')?.value.trim() || '';
+            const subjectSelect = document.getElementById('subject');
+            const subject = subjectSelect ? (subjectSelect.options[subjectSelect.selectedIndex]?.text || subjectSelect.value) : 'General Inquiry';
+            const message = document.getElementById('message')?.value.trim() || '';
+
+            if (sendMessageBtn) {
+                sendMessageBtn.disabled = true;
+                sendMessageBtn.innerHTML = '<i class="ri-loader-4-line animate-spin mr-1"></i> Sending...';
+            }
+
+            // 1. Save to Supabase DB (contact_inquiries)
+            if (window.supabaseClient) {
+                try {
+                    await window.supabaseClient.from('contact_inquiries').insert([{
+                        name,
+                        email: email || null,
+                        phone,
+                        subject,
+                        message
+                    }]);
+                } catch (err) {
+                    console.log('Database save note:', err);
+                }
+            }
+
+            // 2. Prepare WhatsApp direct message for Owner (+91 9669872269)
+            const waText = `🏫 *New Inquiry - Indira Gandhi Public School*\n\n` +
+                `👤 *Name:* ${name}\n` +
+                `📞 *Phone:* ${phone}\n` +
+                (email ? `📧 *Email:* ${email}\n` : '') +
+                `📋 *Subject:* ${subject}\n` +
+                `💬 *Message:* ${message}`;
+
+            const waUrl = `https://wa.me/919669872269?text=${encodeURIComponent(waText)}`;
+
+            if (sendMessageBtn) {
+                sendMessageBtn.disabled = false;
+                sendMessageBtn.innerHTML = 'Send Message';
+            }
+
+            // Update WhatsApp link inside modal
+            const openWaBtn = document.getElementById('openWaInquiryBtn');
+            if (openWaBtn) {
+                openWaBtn.href = waUrl;
+            }
+
+            // Show Confirmation Modal
+            if (successModal) {
+                successModal.classList.remove('hidden');
+            }
+
+            // Automatically open WhatsApp in new tab/app
+            window.open(waUrl, '_blank');
+
             contactForm.reset();
         });
+
         closeModal?.addEventListener('click', function () {
-            successModal.classList.add('hidden');
+            successModal?.classList.add('hidden');
         });
-        successModal.addEventListener('click', function (e) {
+        successModal?.addEventListener('click', function (e) {
             if (e.target === successModal) {
                 successModal.classList.add('hidden');
             }

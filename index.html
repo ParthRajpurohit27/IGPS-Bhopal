@@ -809,17 +809,29 @@
         <i class="ri-arrow-up-line ri-lg"></i>
     </button>
     <!-- Success Modal -->
-    <div id="successModal" class="fixed inset-0 bg-black/50 flex items-center justify-center z-50 hidden">
-        <div class="bg-white rounded-lg p-6 max-w-sm mx-4">
+    <div id="successModal" class="fixed inset-0 bg-black/60 flex items-center justify-center z-50 hidden backdrop-blur-sm px-4">
+        <div class="bg-white rounded-2xl p-6 sm:p-7 max-w-sm w-full shadow-2xl text-center">
             <div class="w-16 h-16 mx-auto bg-green-100 rounded-full flex items-center justify-center mb-4">
-                <i class="ri-check-line ri-2x text-green-600"></i>
+                <i class="ri-checkbox-circle-fill ri-2x text-green-600"></i>
             </div>
-            <h3 class="text-xl font-semibold text-gray-800 text-center mb-2">Message Sent!</h3>
-            <p class="text-gray-600 text-center mb-6">Thank you for contacting us. We will get back to you soon.</p>
-            <button id="closeModal"
-                class="w-full bg-primary text-white px-4 py-2 !rounded-button hover:bg-primary/90 transition-colors cursor-pointer">Close</button>
+            <h3 class="text-xl font-bold text-gray-800 mb-2">Message Forwarded!</h3>
+            <p class="text-xs sm:text-sm text-gray-600 mb-5 leading-relaxed">
+                Your inquiry has been sent to our school administration. We have also prepared your message on WhatsApp for instant chat.
+            </p>
+            <div class="space-y-2">
+                <a id="openWaInquiryBtn" href="https://wa.me/919669872269" target="_blank"
+                    class="w-full bg-green-600 text-white px-4 py-2.5 !rounded-button hover:bg-green-700 transition-colors flex items-center justify-center gap-2 text-sm font-semibold shadow-md">
+                    <i class="ri-whatsapp-fill text-lg"></i> Open WhatsApp Chat
+                </a>
+                <button id="closeModal"
+                    class="w-full border border-gray-200 text-gray-600 px-4 py-2 !rounded-button hover:bg-gray-50 transition-colors text-xs font-medium cursor-pointer">
+                    Close
+                </button>
+            </div>
         </div>
     </div>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="studentportal/supabase-config.js"></script>
     <script src="igps.js"></script>
 </body>
 
