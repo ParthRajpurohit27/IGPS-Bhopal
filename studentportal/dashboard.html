@@ -185,7 +185,40 @@
         </div>
     </div>
 
+    <!-- AI Assistant floating button -->
+    <button id="aiChatToggleBtn" class="fixed bottom-5 right-5 z-50 w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center hover:bg-primary/90 transition-transform hover:scale-105 relative">
+        <i class="ri-chat-smile-3-fill text-2xl"></i>
+        <span class="absolute -top-1 -right-1 bg-secondary text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none shadow">AI</span>
+    </button>
+
+    <!-- AI Assistant chat panel -->
+    <div id="aiChatPanel" class="hidden fixed bottom-24 right-5 z-50 w-[92vw] max-w-sm h-[65vh] max-h-[520px] bg-white rounded-lg shadow-2xl border border-gray-200 flex flex-col overflow-hidden">
+        <div class="bg-primary text-white px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-2">
+                <i class="ri-chat-smile-3-fill"></i>
+                <span class="font-semibold text-sm">Student Data Assistant</span>
+            </div>
+            <button id="aiChatCloseBtn" class="text-white/80 hover:text-white"><i class="ri-close-line text-lg"></i></button>
+        </div>
+        <div id="aiChatMessages" class="flex-1 overflow-y-auto p-3 space-y-2 text-sm bg-gray-50">
+            <div class="bg-white rounded-lg px-3 py-2 shadow-sm text-gray-600 text-xs">
+                Namaste! Mujhse student data ke baare mein kuch bhi pooch sakte ho — jaise "ANANYA UIKEY ka APAAR bana hai kya?" ya "Class 3 mein kitne bacchon ka Aadhar pending hai?"
+            </div>
+        </div>
+        <div class="border-t border-gray-100 p-2 flex gap-2">
+            <input id="aiChatInput" type="text" placeholder="Apna sawaal likho ya bolo..."
+                class="flex-1 border border-gray-300 rounded px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+            <button id="aiChatMicBtn" title="Voice se poocho" class="text-gray-500 border border-gray-300 px-2.5 rounded !rounded-button hover:bg-gray-50">
+                <i class="ri-mic-line"></i>
+            </button>
+            <button id="aiChatSendBtn" class="bg-primary text-white px-3 rounded !rounded-button hover:bg-primary/90">
+                <i class="ri-send-plane-fill"></i>
+            </button>
+        </div>
+    </div>
+
     <script src="supabase-config.js"></script>
+    <script src="ai-config.js"></script>
     <script>
         let CURRENT_STUDENT_ID = null;
 
@@ -826,7 +859,7 @@
             if (CURRENT_VIEW_MODE === "parent") renderParentDetail(id); else openDetail(id);
         }
 
-        // ---- Add New Student ----
+        // ---- Add New Student (2-step: Basic Info -> General Profile) ----
         document.getElementById("addStudentBtn").addEventListener("click", () => openAddStudentForm());
 
         function openAddStudentForm() {
@@ -837,115 +870,99 @@
             document.getElementById("editBtn").classList.add("hidden");
 
             const modalBody = document.getElementById("modalBody");
-
-            // Pre-fill class if a specific class is already selected in the filter above
             const prefillClass = currentClass !== "all" ? currentClass : "";
+            const classOptions = ALL_CLASSES.filter(c => c.id !== "all")
+                .map(c => `<option value="${c.id}" ${c.id === prefillClass ? "selected" : ""}>${c.label}</option>`).join("");
 
-            // Core fields shown right away (most commonly filled first)
-            const CORE_FIELDS = ["student_name", "class", "section", "gender", "date_of_birth", "father_name", "mother_name", "parent_contact"];
-
-            const fieldInput = (key, label) => {
-                if (key === "class") {
-                    const options = ALL_CLASSES.filter(c => c.id !== "all")
-                        .map(c => `<option value="${c.id}" ${c.id === prefillClass ? "selected" : ""}>${c.label}</option>`).join("");
-                    return `
-                    <div class="flex flex-col gap-1" data-field-row="${key}">
-                        <label class="text-xs text-gray-400">${label} *</label>
-                        <select data-field="${key}" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+            modalBody.innerHTML = `
+                <p class="text-xs text-gray-400 mb-3">Step 1 of 2 — Basic Details</p>
+                <div class="space-y-3">
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-gray-400">Class *</label>
+                        <select id="af_class" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
                             <option value="">Select class...</option>
-                            ${options}
+                            ${classOptions}
                         </select>
-                    </div>`;
-                }
-                if (key === "gender") {
-                    return `
-                    <div class="flex flex-col gap-1" data-field-row="${key}">
-                        <label class="text-xs text-gray-400">${label}</label>
-                        <select data-field="${key}" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-gray-400">Section</label>
+                        <input id="af_section" type="text" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary" placeholder="A">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-gray-400">Student's Name *</label>
+                        <input id="af_name" type="text" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-gray-400">Gender</label>
+                        <select id="af_gender" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
                             <option value="">Select...</option>
                             <option value="Male">Male</option>
                             <option value="Female">Female</option>
                         </select>
-                    </div>`;
-                }
-                if (key === "date_of_birth" || key === "admission_date") {
-                    return `
-                    <div class="flex flex-col gap-1" data-field-row="${key}">
-                        <label class="text-xs text-gray-400">${label}</label>
-                        <input type="date" data-field="${key}"
-                            class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
-                    </div>`;
-                }
-                return `
-                <div class="flex flex-col gap-1" data-field-row="${key}">
-                    <label class="text-xs text-gray-400">${label}${key === "student_name" ? " *" : ""}</label>
-                    <input type="text" data-field="${key}" value=""
-                        class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
-                </div>`;
-            };
-
-            const ADD_FIELD_LABELS = { ...STUDENT_FIELD_LABELS, ...PARENT_CORE_FIELDS };
-            const remainingFields = Object.entries(ADD_FIELD_LABELS).filter(([key]) => !CORE_FIELDS.includes(key));
-
-            let html = `<p class="text-xs text-gray-400 mb-3">Fill in what you have now — you can always add the rest (PEN, Aadhar, APAAR ID, etc.) later by editing this student.</p>`;
-            html += `<div id="editFieldsWrap" class="space-y-3">`;
-            html += CORE_FIELDS.map(key => fieldInput(key, ADD_FIELD_LABELS[key])).join("");
-            html += `</div>`;
-
-            html += `
-                <div class="border-t border-gray-100 mt-4 pt-4">
-                    <label class="text-xs text-gray-400 block mb-1">+ Add Field</label>
-                    <select id="addFieldSelect" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
-                        <option value="">Select a field to add...</option>
-                        ${remainingFields.map(([key, label]) => `<option value="${key}">${label}</option>`).join("")}
-                    </select>
-                </div>`;
-
-            html += `
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-gray-400">Date of Birth</label>
+                        <input id="af_dob" type="date" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-gray-400">Father's Name</label>
+                        <input id="af_father" type="text" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-gray-400">Mother's Name</label>
+                        <input id="af_mother" type="text" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-gray-400">AADHAAR Number of Student</label>
+                        <input id="af_aadhar" type="text" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-gray-400">Admission Date (DD/MM/YYYY)</label>
+                        <input id="af_admission" type="date" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-gray-400">Mobile Number (Parent)</label>
+                        <input id="af_mobile" type="text" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                    </div>
+                </div>
                 <div id="editMsg" class="hidden text-sm px-3 py-2 rounded mt-4"></div>
                 <div class="flex gap-2 mt-4">
                     <button id="saveEditBtn" class="flex-1 bg-primary text-white text-sm font-medium py-2 !rounded-button hover:bg-primary/90">
-                        Save New Student
+                        Save & Continue
                     </button>
                     <button id="cancelEditBtn" class="flex-1 border border-gray-300 text-gray-600 text-sm font-medium py-2 !rounded-button hover:bg-gray-50">
                         Cancel
                     </button>
                 </div>`;
 
-            modalBody.innerHTML = html;
             document.getElementById("detailModal").classList.remove("hidden");
-
-            const addFieldSelect = document.getElementById("addFieldSelect");
-            addFieldSelect.addEventListener("change", () => {
-                const key = addFieldSelect.value;
-                if (!key) return;
-                const wrap = document.getElementById("editFieldsWrap");
-                const div = document.createElement("div");
-                div.innerHTML = fieldInput(key, ADD_FIELD_LABELS[key]);
-                wrap.appendChild(div.firstElementChild);
-                addFieldSelect.querySelector(`option[value="${key}"]`).remove();
-                addFieldSelect.value = "";
-            });
-
             document.getElementById("cancelEditBtn").addEventListener("click", () => {
                 document.getElementById("detailModal").classList.add("hidden");
             });
-            document.getElementById("saveEditBtn").addEventListener("click", () => saveNewStudent());
+            document.getElementById("saveEditBtn").addEventListener("click", saveNewStudentStep1);
         }
 
-        async function saveNewStudent() {
+        async function saveNewStudentStep1() {
             const saveBtn = document.getElementById("saveEditBtn");
             const editMsg = document.getElementById("editMsg");
 
-            const payload = {};
-            document.querySelectorAll("#editFieldsWrap [data-field]").forEach(input => {
-                const key = input.dataset.field;
-                const val = input.value.trim();
-                if (val !== "") payload[key] = val;
-            });
+            const payload = {
+                class: document.getElementById("af_class").value.trim(),
+                section: document.getElementById("af_section").value.trim(),
+                student_name: document.getElementById("af_name").value.trim(),
+                gender: document.getElementById("af_gender").value,
+                date_of_birth: document.getElementById("af_dob").value,
+                father_name: document.getElementById("af_father").value.trim(),
+                mother_name: document.getElementById("af_mother").value.trim(),
+                aadhar_number: document.getElementById("af_aadhar").value.trim(),
+                admission_date: document.getElementById("af_admission").value,
+                parent_contact: document.getElementById("af_mobile").value.trim(),
+            };
+            // drop empty fields so we don't overwrite defaults with blank strings
+            Object.keys(payload).forEach(k => { if (payload[k] === "") delete payload[k]; });
 
             if (!payload.student_name || !payload.class) {
-                editMsg.textContent = "Student Name and Class are required.";
+                editMsg.textContent = "Student's Name and Class are required.";
                 editMsg.className = "text-sm px-3 py-2 rounded mt-4 bg-red-50 text-red-600 border border-red-200";
                 editMsg.classList.remove("hidden");
                 return;
@@ -965,15 +982,144 @@
                 editMsg.className = "text-sm px-3 py-2 rounded mt-4 bg-red-50 text-red-600 border border-red-200";
                 editMsg.classList.remove("hidden");
                 saveBtn.disabled = false;
-                saveBtn.textContent = "Save New Student";
+                saveBtn.textContent = "Save & Continue";
                 return;
             }
 
             ALL_STUDENTS.push(data);
             updateClassDropdown();
             render();
+
+            // Student is saved -> automatically move to Step 2 (General Profile)
+            openGeneralProfileForm(data.id);
+        }
+
+        function openGeneralProfileForm(id) {
+            const s = ALL_STUDENTS.find(x => String(x.id) === String(id));
+            if (!s) return;
+            CURRENT_STUDENT_ID = id;
+            document.getElementById("modalTitle").textContent = "Fill The General Profile";
+            const modalBody = document.getElementById("modalBody");
+
+            modalBody.innerHTML = `
+                <p class="text-xs text-gray-400 mb-3">Step 2 of 2 — ${s.student_name} was added. Fill this now, or skip and add it later by editing this student.</p>
+                <div class="space-y-3">
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-gray-400">Social Category</label>
+                        <select id="gp_category" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option value="">Select...</option>
+                            <option value="GENERAL">GENERAL</option>
+                            <option value="SC">SC</option>
+                            <option value="ST">ST</option>
+                            <option value="OBC">OBC</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-gray-400">Minority Group</label>
+                        <select id="gp_minority" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option value="">Select...</option>
+                            <option value="Muslim">Muslim</option>
+                            <option value="Christian">Christian</option>
+                            <option value="Sikh">Sikh</option>
+                            <option value="Buddhist">Buddhist</option>
+                            <option value="Parsi">Parsi</option>
+                            <option value="Jain">Jain</option>
+                            <option value="Not in Minority">Not in Minority</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-gray-400">Whether BPL beneficiary?</label>
+                        <select id="gp_bpl" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option value="">Select...</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-gray-400">Whether belongs to EWS / Disadvantaged Group?</label>
+                        <select id="gp_ews" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option value="">Select...</option>
+                            <option value="Yes">Yes</option>
+                            <option value="No">No</option>
+                        </select>
+                    </div>
+                    <div class="flex flex-col gap-1">
+                        <label class="text-xs text-gray-400">Blood Group</label>
+                        <select id="gp_blood" class="w-full border border-gray-300 rounded px-3 py-1.5 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
+                            <option value="">Select...</option>
+                            <option value="A+">A+</option>
+                            <option value="A-">A-</option>
+                            <option value="B+">B+</option>
+                            <option value="B-">B-</option>
+                            <option value="O+">O+</option>
+                            <option value="O-">O-</option>
+                            <option value="AB+">AB+</option>
+                            <option value="AB-">AB-</option>
+                            <option value="UNDER INVESTIGATION">UNDER INVESTIGATION</option>
+                        </select>
+                    </div>
+                </div>
+                <div id="editMsg" class="hidden text-sm px-3 py-2 rounded mt-4"></div>
+                <div class="flex gap-2 mt-4">
+                    <button id="saveGpBtn" class="flex-1 bg-primary text-white text-sm font-medium py-2 !rounded-button hover:bg-primary/90">
+                        Save
+                    </button>
+                    <button id="skipGpBtn" class="flex-1 border border-gray-300 text-gray-600 text-sm font-medium py-2 !rounded-button hover:bg-gray-50">
+                        Skip for now
+                    </button>
+                </div>`;
+
+            document.getElementById("detailModal").classList.remove("hidden");
+            document.getElementById("skipGpBtn").addEventListener("click", () => {
+                document.getElementById("detailModal").classList.add("hidden");
+            });
+            document.getElementById("saveGpBtn").addEventListener("click", () => saveGeneralProfile(id));
+        }
+
+        async function saveGeneralProfile(id) {
+            const s = ALL_STUDENTS.find(x => String(x.id) === String(id));
+            if (!s) return;
+
+            const saveBtn = document.getElementById("saveGpBtn");
+            const editMsg = document.getElementById("editMsg");
+            saveBtn.disabled = true;
+            saveBtn.textContent = "Saving...";
+
+            const category = document.getElementById("gp_category").value;
+            const blood_group = document.getElementById("gp_blood").value;
+            const minority_group = document.getElementById("gp_minority").value;
+            const bpl_beneficiary = document.getElementById("gp_bpl").value;
+            const ews_disadvantaged_group = document.getElementById("gp_ews").value;
+
+            const updates = {};
+            if (category) updates.category = category;
+            if (blood_group) updates.blood_group = blood_group;
+
+            const mergedInfo = { ...(s.additional_info || {}) };
+            if (minority_group) mergedInfo.minority_group = minority_group;
+            if (bpl_beneficiary) mergedInfo.bpl_beneficiary = bpl_beneficiary;
+            if (ews_disadvantaged_group) mergedInfo.ews_disadvantaged_group = ews_disadvantaged_group;
+            if (Object.keys(mergedInfo).length > 0) updates.additional_info = mergedInfo;
+
+            if (Object.keys(updates).length === 0) {
+                document.getElementById("detailModal").classList.add("hidden");
+                return;
+            }
+
+            const { error } = await supabaseClient.from("students").update(updates).eq("id", s.id);
+
+            if (error) {
+                editMsg.textContent = "Could not save: " + error.message;
+                editMsg.className = "text-sm px-3 py-2 rounded mt-4 bg-red-50 text-red-600 border border-red-200";
+                editMsg.classList.remove("hidden");
+                saveBtn.disabled = false;
+                saveBtn.textContent = "Save";
+                return;
+            }
+
+            Object.assign(s, updates);
+            render();
             document.getElementById("detailModal").classList.add("hidden");
-            openDetail(data.id);
         }
 
         // ---- Amendment History ----
@@ -1118,6 +1264,141 @@
             pdf.save(reportTitle().replace(/\s+/g, "_") + ".pdf");
             btn.innerHTML = original;
         });
+
+        // ==========================================================
+        // ---- AI Assistant (free, Google Gemini API) ----
+        // Answers questions using ONLY the student data already loaded
+        // in this browser session (ALL_STUDENTS). Nothing is sent
+        // anywhere except Google's Gemini API for generating the answer.
+        // ==========================================================
+        const aiChatToggleBtn = document.getElementById("aiChatToggleBtn");
+        const aiChatPanel = document.getElementById("aiChatPanel");
+        const aiChatMessages = document.getElementById("aiChatMessages");
+        const aiChatInput = document.getElementById("aiChatInput");
+        const aiChatSendBtn = document.getElementById("aiChatSendBtn");
+
+        aiChatToggleBtn.addEventListener("click", () => aiChatPanel.classList.toggle("hidden"));
+        document.getElementById("aiChatCloseBtn").addEventListener("click", () => aiChatPanel.classList.add("hidden"));
+
+        function addAiMessage(text, from) {
+            const bubble = document.createElement("div");
+            if (from === "user") {
+                bubble.className = "bg-primary text-white rounded-lg px-3 py-2 shadow-sm text-sm ml-auto max-w-[85%]";
+            } else {
+                bubble.className = "bg-white rounded-lg px-3 py-2 shadow-sm text-gray-700 text-sm max-w-[85%] cursor-pointer hover:bg-gray-50 transition-colors";
+                bubble.title = "Tap to copy";
+                bubble.addEventListener("click", () => {
+                    const val = bubble.textContent;
+                    if (navigator.clipboard && navigator.clipboard.writeText) {
+                        navigator.clipboard.writeText(val).then(() => showCopyToast(val.slice(0, 40)));
+                    } else {
+                        fallbackCopy(val);
+                    }
+                });
+            }
+            bubble.style.whiteSpace = "pre-wrap";
+            bubble.textContent = text;
+            aiChatMessages.appendChild(bubble);
+            aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+            return bubble;
+        }
+
+        // Build a compact data context so the AI only sees what it needs
+        function buildAiContext() {
+            return ALL_STUDENTS.map(s => ({
+                name: s.student_name, class: s.class, section: s.section, roll: s.roll_number,
+                pen: s.student_pen, dob: s.date_of_birth, gender: s.gender,
+                father: s.father_name, mother: s.mother_name, mobile: s.parent_contact,
+                aadhar_status: s.aadhar_status, apaar_id: s.apaar_id, apaar_status: s.apaar_status,
+                admission_date: s.admission_date, blood_group: s.blood_group, category: s.category,
+                address: s.address,
+            }));
+        }
+
+        async function askAi(question) {
+            if (!GEMINI_API_KEY || GEMINI_API_KEY.includes("PASTE_YOUR")) {
+                return "AI abhi setup nahi hua — Google AI Studio se free API key leke ai-config.js mein daal do.";
+            }
+
+            const context = buildAiContext();
+            const systemPrompt = `You are a data lookup assistant for staff at Indira Gandhi Public School, Bhopal. ` +
+                `You ONLY answer questions about the student data given below — nothing else (no general knowledge, no advice, no opinions, no long explanations). ` +
+                `Answer using ONLY this data — never invent information; if something isn't in the data, say so in one short line. ` +
+                `Keep every answer SHORT and to the point — 1 to 3 lines max, just the fact(s) asked for, no extra commentary, no bullet-point essays, no "let me explain" filler. ` +
+                `Reply in the same language/style the question was asked in (Hindi/Hinglish/English).\n\n` +
+                `STUDENT DATA:\n${JSON.stringify(context)}`;
+
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent?key=${GEMINI_API_KEY}`;
+            const res = await fetch(url, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    contents: [{ parts: [{ text: question }] }],
+                    systemInstruction: { parts: [{ text: systemPrompt }] },
+                    generationConfig: { temperature: 0.2, maxOutputTokens: 200 },
+                })
+            });
+
+            if (!res.ok) {
+                const errText = await res.text();
+                throw new Error("Gemini API error: " + res.status + " " + errText.slice(0, 200));
+            }
+            const data = await res.json();
+            const answer = data?.candidates?.[0]?.content?.parts?.map(p => p.text).join("") ;
+            return answer || "Maaf karo, jawab nahi mil paya. Dobara try karo.";
+        }
+
+        async function sendAiMessage() {
+            const question = aiChatInput.value.trim();
+            if (!question) return;
+            addAiMessage(question, "user");
+            aiChatInput.value = "";
+            const thinkingBubble = addAiMessage("Soch raha hu...", "ai");
+
+            try {
+                const answer = await askAi(question);
+                thinkingBubble.textContent = answer;
+            } catch (err) {
+                thinkingBubble.textContent = "Error: " + err.message;
+            }
+            aiChatMessages.scrollTop = aiChatMessages.scrollHeight;
+        }
+
+        aiChatSendBtn.addEventListener("click", sendAiMessage);
+        aiChatInput.addEventListener("keydown", (e) => { if (e.key === "Enter") sendAiMessage(); });
+
+        // ---- Voice input (browser's built-in speech recognition, free, no API needed) ----
+        const aiChatMicBtn = document.getElementById("aiChatMicBtn");
+        const SpeechRecognitionAPI = window.SpeechRecognition || window.webkitSpeechRecognition;
+
+        if (!SpeechRecognitionAPI) {
+            aiChatMicBtn.classList.add("hidden"); // not supported on this browser
+        } else {
+            const recognition = new SpeechRecognitionAPI();
+            recognition.lang = "hi-IN"; // understands Hindi + Hinglish well; also picks up English
+            recognition.interimResults = false;
+            recognition.maxAlternatives = 1;
+            let listening = false;
+
+            recognition.addEventListener("result", (e) => {
+                aiChatInput.value = e.results[0][0].transcript;
+            });
+            recognition.addEventListener("end", () => {
+                listening = false;
+                aiChatMicBtn.classList.remove("bg-red-50", "text-red-600", "border-red-300");
+            });
+            recognition.addEventListener("error", () => {
+                listening = false;
+                aiChatMicBtn.classList.remove("bg-red-50", "text-red-600", "border-red-300");
+            });
+
+            aiChatMicBtn.addEventListener("click", () => {
+                if (listening) { recognition.stop(); return; }
+                listening = true;
+                aiChatMicBtn.classList.add("bg-red-50", "text-red-600", "border-red-300");
+                recognition.start();
+            });
+        }
     </script>
 </body>
 
