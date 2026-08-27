@@ -186,9 +186,11 @@
     </div>
 
     <!-- AI Assistant floating button -->
-    <button id="aiChatToggleBtn" class="fixed bottom-5 right-5 z-50 w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center hover:bg-primary/90 transition-transform hover:scale-105 relative">
-        <i class="ri-chat-smile-3-fill text-2xl"></i>
-        <span class="absolute -top-1 -right-1 bg-secondary text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none shadow">AI</span>
+    <button id="aiChatToggleBtn" class="fixed bottom-5 right-5 z-50 w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center hover:bg-primary/90 transition-transform hover:scale-105">
+        <span class="relative inline-flex items-center justify-center w-full h-full">
+            <i class="ri-chat-smile-3-fill text-2xl"></i>
+            <span class="absolute -top-4 -right-4 bg-secondary text-white text-[9px] font-bold px-1.5 py-0.5 rounded-full leading-none shadow">AI</span>
+        </span>
     </button>
 
     <!-- AI Assistant chat panel -->
@@ -202,7 +204,7 @@
         </div>
         <div id="aiChatMessages" class="flex-1 overflow-y-auto p-3 space-y-2 text-sm bg-gray-50">
             <div class="bg-white rounded-lg px-3 py-2 shadow-sm text-gray-600 text-xs">
-                Namaste! Mujhse student data ke baare mein kuch bhi pooch sakte ho — jaise kisi specific student ka APAAR bana hai kya?" ya "Class 3 mein kitne bacchon ka Aadhar pending hai?"
+                Namaste! Mujhse student data ke baare mein kuch bhi pooch sakte ho — jaise "ANANYA UIKEY ka APAAR bana hai kya?" ya "Class 3 mein kitne bacchon ka Aadhar pending hai?"
             </div>
         </div>
         <div class="border-t border-gray-100 p-2 flex gap-2">
