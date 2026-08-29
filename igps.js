@@ -1,6 +1,4 @@
-// IGPS Main JavaScript
 
-// Safe Swiper initialization (only if Swiper is loaded and element exists)
 if (typeof Swiper !== 'undefined' && document.querySelector('.mySwiper')) {
     new Swiper('.mySwiper', {
         effect: 'coverflow',
@@ -29,7 +27,6 @@ if (typeof Swiper !== 'undefined' && document.querySelector('.mySwiper')) {
 }
 
 document.addEventListener('DOMContentLoaded', function () {
-    // Fast & Reliable Preloader Dismissal
     const preloader = document.getElementById('preloader');
     if (preloader) {
         setTimeout(function () {
@@ -41,7 +38,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }, 500);
     }
 
-    // Enable edit mode if URL contains edit parameter
     const urlParams = new URLSearchParams(window.location.search);
     const isEditMode = urlParams.get('edit') === 'true';
     if (isEditMode) {
@@ -71,7 +67,6 @@ document.addEventListener('DOMContentLoaded', function () {
             }
         });
 
-        // Close mobile menu when clicking on a link
         const mobileLinks = mobileMenu.querySelectorAll('a');
         mobileLinks.forEach(link => {
             link.addEventListener('click', function () {
@@ -81,7 +76,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Hero Slider Auto-rotation
     const slides = document.querySelectorAll('.slide');
     if (slides.length > 0) {
         let currentSlide = 0;
@@ -129,7 +123,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Trigger counter animation when counters are in view
     const counterEl = document.querySelector('.counter');
     if (counterEl) {
         const counterSection = counterEl.closest('section');
@@ -146,7 +139,6 @@ document.addEventListener('DOMContentLoaded', function () {
         }
     }
 
-    // Back to Top Button
     const backToTopBtn = document.getElementById('backToTop');
     if (backToTopBtn) {
         window.addEventListener('scroll', function () {
@@ -166,7 +158,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Contact Form Submission (Direct Delivery to Owner's Mobile & WhatsApp)
     const contactForm = document.getElementById('contactForm');
     const successModal = document.getElementById('successModal');
     const closeModal = document.getElementById('closeModal');
@@ -188,7 +179,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 sendMessageBtn.innerHTML = '<i class="ri-loader-4-line animate-spin mr-1"></i> Sending...';
             }
 
-            // 1. Save to Supabase DB (contact_inquiries)
             if (window.supabaseClient) {
                 try {
                     await window.supabaseClient.from('contact_inquiries').insert([{
@@ -203,7 +193,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 }
             }
 
-            // 2. Prepare WhatsApp direct message for Owner (+91 9669872269)
             const waText = `🏫 *New Inquiry - Indira Gandhi Public School*\n\n` +
                 `👤 *Name:* ${name}\n` +
                 `📞 *Phone:* ${phone}\n` +
@@ -218,7 +207,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 sendMessageBtn.innerHTML = 'Send Message';
             }
 
-            // Update WhatsApp link inside modal
             const openWaBtn = document.getElementById('openWaInquiryBtn');
             if (openWaBtn) {
                 openWaBtn.href = waUrl;
@@ -229,7 +217,6 @@ document.addEventListener('DOMContentLoaded', function () {
                 successModal.classList.remove('hidden');
             }
 
-            // Automatically open WhatsApp in new tab/app
             window.open(waUrl, '_blank');
 
             contactForm.reset();
@@ -245,7 +232,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Smooth Scroll for Navigation Links
     document.querySelectorAll('a[href^="#"]').forEach(anchor => {
         anchor.addEventListener('click', function (e) {
             const targetId = this.getAttribute('href');
@@ -261,6 +247,36 @@ document.addEventListener('DOMContentLoaded', function () {
                     behavior: 'smooth'
                 });
             }
+        });
+    });
+
+    if ('serviceWorker' in navigator) {
+        window.addEventListener('load', () => {
+            navigator.serviceWorker.register('/sw.js')
+                .then(registration => {
+                    console.log('ServiceWorker registration successful with scope: ', registration.scope);
+                })
+                .catch(err => {
+                    console.log('ServiceWorker registration failed: ', err);
+                });
+        });
+    }
+
+    let deferredPrompt;
+    window.addEventListener('beforeinstallprompt', (e) => {
+        e.preventDefault();
+        deferredPrompt = e;
+        
+        const installBtns = document.querySelectorAll('.pwa-install-btn');
+        installBtns.forEach(btn => {
+            btn.classList.remove('hidden'); // Show button if it exists
+            btn.addEventListener('click', async () => {
+                btn.classList.add('hidden'); // Hide button after click
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                console.log(`User response to the install prompt: ${outcome}`);
+                deferredPrompt = null;
+            });
         });
     });
 });

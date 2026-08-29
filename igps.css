@@ -174,7 +174,7 @@ body {
     }
 }
 
-/* Subtle Modern Button Hover */
+
 button[class*="bg-primary"],
 a[class*="bg-primary"] {
     transition: all 0.25s ease;

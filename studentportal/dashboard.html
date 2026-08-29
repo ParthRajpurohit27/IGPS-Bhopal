@@ -11,6 +11,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4F46E5">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/zX25kF5R/Screenshot-42.png">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -81,7 +84,7 @@
         <!-- Filters -->
         <div class="bg-white rounded-lg shadow-sm p-3 sm:p-4 mb-4 sm:mb-6">
 
-            <!-- status quick filter, only shown on aadhar/apaar tabs -->
+            
             <div id="statusFilters" class="hidden flex flex-wrap items-center gap-2 mb-3">
                 <button data-status="all" class="status-pill active text-xs sm:text-sm px-3 py-1.5 rounded-full border border-gray-200">All</button>
                 <button data-status="verified" class="status-pill text-xs sm:text-sm px-3 py-1.5 rounded-full border border-gray-200">✓ Verified</button>
@@ -95,7 +98,7 @@
                         class="w-full border border-gray-300 rounded pl-9 pr-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary">
                 </div>
                 
-                <!-- Select Class Filter Dropdown -->
+                
                 <div class="relative sm:w-56">
                     <i class="ri-graduation-cap-line absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 pointer-events-none"></i>
                     <select id="classSelectDropdown" class="w-full border border-gray-300 rounded pl-9 pr-8 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary bg-white text-gray-800 font-medium cursor-pointer shadow-sm">
@@ -108,7 +111,7 @@
                 </button>
             </div>
 
-            <!-- Download current filtered view -->
+            
             <div class="flex flex-wrap gap-2 pt-2 border-t border-gray-100">
                 <span class="text-xs text-gray-400 self-center mr-1">Download this list:</span>
                 <button id="downloadPdfBtn" class="text-xs sm:text-sm bg-primary text-white px-3 py-1.5 !rounded-button hover:bg-primary/90">
@@ -120,7 +123,7 @@
             </div>
         </div>
 
-        <!-- Loading / Error / Empty -->
+        
         <div id="loadingState" class="text-center py-16 text-gray-400">
             <i class="ri-loader-4-line animate-spin text-3xl"></i>
             <p class="mt-2 text-sm">Loading student data...</p>
@@ -128,7 +131,7 @@
         <div id="errorState" class="hidden text-center py-16 text-red-500 text-sm"></div>
         <div id="emptyState" class="hidden text-center py-16 text-gray-400 text-sm">No students found for this filter.</div>
 
-        <!-- Card grid (mobile-friendly, works on all screen sizes) -->
+        
         <div id="cardGrid" class="hidden grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3"></div>
 
         <!-- Pagination -->
@@ -162,17 +165,22 @@
         </div>
     </div>
 
-    <!-- Hidden container used only when generating a PDF/Image report (not shown on screen) -->
+    
     <div id="reportRoot" style="position:fixed; left:-9999px; top:0; width:800px; background:#fff;"></div>
 
-    <!-- Footer: Amendment History -->
+    
     <footer class="container mx-auto px-3 sm:px-4 py-6 text-center">
         <button id="openHistoryBtn" class="text-xs sm:text-sm text-gray-500 hover:text-primary border border-gray-200 px-4 py-2 !rounded-button">
             <i class="ri-history-line mr-1"></i>View Last Amendments History
         </button>
+        <div class="mt-4">
+            <button class="pwa-install-btn hidden text-xs sm:text-sm text-green-600 hover:text-green-700 font-medium">
+                <i class="ri-download-cloud-2-line mr-1"></i> Install Admin App
+            </button>
+        </div>
     </footer>
 
-    <!-- Amendment History Modal -->
+    
     <div id="historyModal" class="hidden fixed inset-0 bg-black/40 z-50 flex items-center justify-center px-4">
         <div class="bg-white rounded-lg shadow-xl w-full max-w-lg max-h-[85vh] overflow-y-auto">
             <div class="flex items-center justify-between px-5 py-4 border-b sticky top-0 bg-white">
@@ -185,7 +193,7 @@
         </div>
     </div>
 
-    <!-- AI Assistant floating button -->
+    
     <button id="aiChatToggleBtn" class="fixed bottom-5 right-5 z-50 w-14 h-14 rounded-full bg-primary text-white shadow-lg flex items-center justify-center hover:bg-primary/90 transition-transform hover:scale-105">
         <span class="relative inline-flex items-center justify-center w-full h-full">
             <i class="ri-chat-smile-3-fill text-2xl"></i>
@@ -193,7 +201,7 @@
         </span>
     </button>
 
-    <!-- AI Assistant chat panel -->
+    
     <div id="aiChatPanel" class="hidden fixed bottom-24 right-5 z-50 w-[92vw] max-w-sm h-[65vh] max-h-[520px] bg-white rounded-lg shadow-2xl border border-gray-200 flex flex-col overflow-hidden">
         <div class="bg-primary text-white px-4 py-3 flex items-center justify-between">
             <div class="flex items-center gap-2">
@@ -1401,6 +1409,30 @@
                 recognition.start();
             });
         }
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration failed: ', err));
+            });
+        }
+
+        // PWA Install Prompt Handler
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const installBtns = document.querySelectorAll('.pwa-install-btn');
+            installBtns.forEach(btn => {
+                btn.classList.remove('hidden');
+                btn.addEventListener('click', async () => {
+                    btn.classList.add('hidden');
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    deferredPrompt = null;
+                });
+            });
+        });
     </script>
 </body>
 

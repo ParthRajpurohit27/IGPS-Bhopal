@@ -11,6 +11,9 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#4F46E5">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/zX25kF5R/Screenshot-42.png">
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <style>
         body { font-family: 'Poppins', sans-serif; }
@@ -53,6 +56,11 @@
 
         <p class="text-center text-xs text-gray-400 mt-6">Access restricted to authorized school staff only.</p>
         <p class="text-center text-xs mt-2"><a href="../index.html" class="text-primary hover:underline">← Back to school website</a></p>
+        <p class="text-center text-xs mt-4">
+            <button class="pwa-install-btn hidden text-green-600 hover:text-green-700 font-medium cursor-pointer">
+                <i class="ri-download-cloud-2-line mr-1"></i> Install Admin App
+            </button>
+        </p>
     </div>
 
     <script src="supabase-config.js"></script>
@@ -91,6 +99,30 @@
             }
 
             window.location.href = "dashboard.html";
+        });
+
+        // PWA Service Worker Registration
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('./sw.js').catch(err => console.log('SW registration failed: ', err));
+            });
+        }
+
+        // PWA Install Prompt Handler
+        let deferredPrompt;
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            const installBtns = document.querySelectorAll('.pwa-install-btn');
+            installBtns.forEach(btn => {
+                btn.classList.remove('hidden');
+                btn.addEventListener('click', async () => {
+                    btn.classList.add('hidden');
+                    deferredPrompt.prompt();
+                    const { outcome } = await deferredPrompt.userChoice;
+                    deferredPrompt = null;
+                });
+            });
         });
     </script>
 </body>

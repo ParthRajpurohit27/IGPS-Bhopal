@@ -14,6 +14,9 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/remixicon/4.6.0/remixicon.min.css">
     <link rel="stylesheet" href="igps.css">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d3b66">
+    <link rel="apple-touch-icon" href="https://i.postimg.cc/zX25kF5R/Screenshot-42.png">
 </head>
 
 <body class="bg-gray-50">
@@ -37,9 +40,9 @@
                 <a href="gallery.html" class="text-gray-700 hover:text-primary transition-colors">Gallery</a>
                 <a href="#contact" class="text-gray-700 hover:text-primary transition-colors">Contact</a>
             </nav>
-            <div class="flex items-center space-x-4">
+            <div class="flex items-center space-x-3">
                 <a href="portal.html"
-                    class="hidden md:block bg-primary text-white px-4 py-2 !rounded-button hover:bg-primary/90 transition-colors cursor-pointer shadow-sm font-medium">Login Now</a>
+                    class="hidden md:block bg-primary text-white px-4 py-2 !rounded-button hover:bg-primary/90 transition-colors cursor-pointer shadow-sm font-medium">Login</a>
                 <button id="menuBtn"
                     class="md:hidden w-10 h-10 flex items-center justify-center text-gray-700 cursor-pointer">
                     <i class="ri-menu-line ri-lg"></i>
@@ -60,7 +63,7 @@
                     class="text-gray-700 hover:text-primary transition-colors py-2 border-b border-gray-100">Admissions</a>
                 <a href="gallery.html"
                     class="text-gray-700 hover:text-primary transition-colors py-2 border-b border-gray-100">Gallery</a>
-                <a href="#contact" class="text-gray-700 hover:text-primary transition-colors py-2">Contact</a>
+                <a href="#contact" class="text-gray-700 hover:text-primary transition-colors py-2 border-b border-gray-100">Contact</a>
                 <a href="portal.html"
                     class="bg-primary text-white px-4 py-2 !rounded-button text-center hover:bg-primary/90 transition-colors cursor-pointer font-medium">Login</a>
             </div>
@@ -113,7 +116,7 @@
             </div>
             </div>
         </section>
-        <!-- my floting text  -->
+        <!-- my floting text -->
         <a href="#admissions">
 
             <div class="floating-text-container">
@@ -696,32 +699,7 @@
     </main>
 
     
-    <!-- 
     
-    
-    3D Image Slider (Swiper js ka Coverflow Effect )
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"
-    />
-    <div class="py-12 bg-gray-100">
-      <div class="container mx-auto">
-        <h2 class="text-2xl md:text-3xl font-bold text-center text-gray-800 mb-8">Indira Gandhi Public School</h2>
-        <div class="swiper mySwiper" style="width:100%;max-width:800px;margin:auto;">
-          <div class="swiper-wrapper">
-            <div class="swiper-slide">
-              <img src="https://images.unsplash.com/photo-1503676382389-4809596d5290?auto=format&fit=crop&w=400&q=80" alt="Classroom Learning" class="rounded-lg shadow-lg w-full h-64 object-cover" />
-            </div>
-            
-            
-          
-          
-            <div class="swiper-slide">
-              <img src="https://images.unsplash.com/photo-1516979187457-637abb4f9353?auto=format&fit=crop&w=400&q=80" alt="Student Group Work" class="rounded-lg shadow-lg w-full h-64 object-cover" />
-            </div>
-
-    
-           -->
         
           </div>
           <!-- Add Pagination -->
@@ -769,6 +747,11 @@
                         </li>
                         <li><a href="#contact"
                                 class="text-gray-400 hover:text-white transition-colors cursor-pointer">Contact</a></li>
+                        <li>
+                            <button class="pwa-install-btn hidden text-green-400 hover:text-green-300 font-medium transition-colors cursor-pointer mt-2 text-left">
+                                <i class="ri-download-cloud-2-line mr-1"></i> Install School App
+                            </button>
+                        </li>
                     </ul>
                 </div>
                 <div>
